@@ -1,0 +1,20 @@
+{
+  "name": "@unexp/router",
+  "version": "0.0.0",
+  "description": "A very simple router for VKUI based apps.",
+  "author": "Anton Zahariev <jjoska@yandex.ru>",
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": false,
+  "keywords": ["VKUI", "router", "vkma", "navigator"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/profilemyprofile/router"
+  },
+  "bugs": {
+    "url": "https://github.com/profilemyprofile/router/issues"
+  },
+  "homepage": "https://github.com/profilemyprofile/router"
+}
