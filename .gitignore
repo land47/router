@@ -4,3 +4,6 @@ dist
 *.lock
 *.log
 *-lock.json
+
+.vscode
+.idea
