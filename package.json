@@ -4,11 +4,18 @@
   "description": "A very simple router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "types": "dist/index.d.ts",
   "license": "MIT",
   "private": false,
-  "keywords": ["VKUI", "router", "vkma", "navigator"],
+  "keywords": [
+    "VKUI",
+    "router",
+    "vkma",
+    "navigator"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/profilemyprofile/router"
@@ -16,5 +23,15 @@
   "bugs": {
     "url": "https://github.com/profilemyprofile/router/issues"
   },
-  "homepage": "https://github.com/profilemyprofile/router"
+  "homepage": "https://github.com/profilemyprofile/router",
+  "peerDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "install-peers-cli": "^2.2.0"
+  }
 }
