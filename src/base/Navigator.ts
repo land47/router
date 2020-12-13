@@ -1,5 +1,5 @@
 import { HistoryListener, HistoryListenerHandler } from 'shared/types'
-import { isEqualArrays, hasIntersections } from '../utils'
+import { isEqualArrays, hasIntersections } from 'utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
@@ -69,14 +69,14 @@ export class Navigator {
   }
 
   /**
-   * Сериализирует URL-параметры в объект.
+   * Сериализует URL-параметры в объект.
    * */
   private serialize(search: string) {
     return Object.fromEntries(new URLSearchParams(search))
   }
 
   /**
-   * Десериализирует объект в строку URL-параметров.
+   * Десериализует объект в строку URL-параметров.
    * */
   private deserialize(object: Record<string, string>) {
     return '' + new URLSearchParams(object)
