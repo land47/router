@@ -23,6 +23,11 @@ export type HistoryListener<K extends string[] = string[]> = {
  * */
 export type ApplicationStructure = {
   [K in 'story' | 'view' | 'panel']?: string
+} &
+  PopoutsStructure
+
+export type PopoutsStructure = {
+  modal?: null | string
 }
 
 /**
