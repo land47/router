@@ -79,7 +79,7 @@ export class Navigator {
    * Десериализует объект в строку URL-параметров.
    * */
   private deserialize(object: Record<string, string>) {
-    return '' + new URLSearchParams(object)
+    return '?' + new URLSearchParams(object)
   }
 
   /**
@@ -105,6 +105,14 @@ export class Navigator {
   readonly replace = (record: Record<string, string>) => {
     this.history.replaceState('', '', this.deserialize(record))
     this.dispatch(null)
+  }
+
+  /**
+   * Возвращает на прошлую запись в истории, или если такой нет,
+   * закрывает приложение.
+   * */
+  readonly back = () => {
+    this.history.back()
   }
 
   /**
