@@ -1,5 +1,5 @@
 import { HistoryListener, HistoryListenerHandler } from 'shared/types'
-import { isEqualsArrays } from '../utils'
+import { isEqualsArrays, hasIntersections } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
@@ -19,7 +19,11 @@ export class Navigator {
     // step 1
     let serialized = this.serialize(this.location.search)
 
-    //
+    // step 2
+    let subscribers = this.findListenersByKeys(Object.keys(serialized))
+
+    // step 3
+    subscribers.forEach(listener => listener.handler(serialized))
   }
 
   /**
@@ -36,7 +40,7 @@ export class Navigator {
   }
 
   /**
-   * Удаляет слушателя изменений, если такой найден.
+   * Удаляет слушатель изменений, если такой найден.
    * */
   readonly removeListener = <K extends string[]>(
     keys: K,
@@ -50,18 +54,64 @@ export class Navigator {
     index && this.listeners.splice(index, 1)
   }
 
+  /**
+   * Получение текущей локации. (Location API)
+   * */
   get location() {
     return window.location
   }
 
+  /**
+   * Получение текущей истории. (History API)
+   * */
   get history() {
     return window.history
   }
 
   /**
-   * Сериализует URL-параметры в объект.
+   * Сериализирует URL-параметры в объект.
    * */
   private serialize(search: string) {
     return Object.fromEntries(new URLSearchParams(search))
+  }
+
+  /**
+   * Десериализирует объект в строку URL-параметров.
+   * */
+  private deserialize(object: Record<string, string>) {
+    return '' + new URLSearchParams(object)
+  }
+
+  /**
+   * Ищет слушателей по массиву с ключами.
+   * */
+  private readonly findListenersByKeys = (keys: string[]) => {
+    return this.listeners.filter(listener =>
+      hasIntersections(keys, listener.keys)
+    )
+  }
+
+  /**
+   * Добавляет новую запись в историю, вызывая событие `popstate`.
+   * */
+  readonly push = (record: Record<string, string>) => {
+    this.history.pushState('', '', this.deserialize(record))
+    this.dispatch(null)
+  }
+
+  /**
+   * Заменяет текущую запись в истории, вызывая событие `popstate`.
+   * */
+  readonly replace = (record: Record<string, string>) => {
+    this.history.replaceState('', '', this.deserialize(record))
+    this.dispatch(null)
+  }
+
+  /**
+   * Вызывает событие `popstate`, передавая в качестве состояния
+   * объект или null.
+   * */
+  private dispatch(state: Record<string, string> | null) {
+    window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 }
