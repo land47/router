@@ -1,4 +1,4 @@
-export function isEqualsArrays<T>(a: T[], b: T[]) {
+export function isEqualArrays<T>(a: T[], b: T[]) {
   if (a.length !== b.length) {
     return false
   }

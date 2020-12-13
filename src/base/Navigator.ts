@@ -1,5 +1,5 @@
 import { HistoryListener, HistoryListenerHandler } from 'shared/types'
-import { isEqualsArrays, hasIntersections } from '../utils'
+import { isEqualArrays, hasIntersections } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
@@ -48,7 +48,7 @@ export class Navigator {
   ) => {
     // prettier-ignore
     let index = this.listeners.findIndex(listener =>
-      listener.handler === handler && isEqualsArrays(listener.keys, keys)
+      listener.handler === handler && isEqualArrays(listener.keys, keys)
     )
 
     index && this.listeners.splice(index, 1)

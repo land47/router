@@ -1,2 +1,2 @@
-export { isEqualsArrays } from './isEqualArrays'
+export { isEqualArrays } from './isEqualArrays'
 export { hasIntersections } from './hasIntersections'
