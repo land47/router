@@ -24,3 +24,8 @@ export type HistoryListener<K extends string[] = string[]> = {
 export type ApplicationStructure = {
   [K in 'story' | 'view' | 'panel']?: string
 }
+
+/**
+ * Состояние записи (хранится и может быть доступно вместе с ней)
+ * */
+export type RecordState<T> = Record<string, T>
