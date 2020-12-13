@@ -75,14 +75,14 @@ export class Navigator {
   /**
    * Сериализует URL-параметры в объект.
    * */
-  private serialize(search: string) {
+  serialize(search: string) {
     return Object.fromEntries(new URLSearchParams(search))
   }
 
   /**
    * Десериализует объект в строку URL-параметров.
    * */
-  private deserialize(object: Record<string, string>) {
+  deserialize(object: Record<string, string>) {
     return '?' + new URLSearchParams(object)
   }
 
