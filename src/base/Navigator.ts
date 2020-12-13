@@ -107,7 +107,7 @@ export class Navigator {
     state: HistoryItemState<T> = {}
   ) => {
     this.history.pushState(state, '', this.deserialize(record))
-    this.dispatch(null)
+    this.dispatch(state)
   }
 
   /**
@@ -118,7 +118,7 @@ export class Navigator {
     state: HistoryItemState<T> = {}
   ) => {
     this.history.replaceState(state, '', this.deserialize(record))
-    this.dispatch(null)
+    this.dispatch(state)
   }
 
   /**
@@ -133,7 +133,7 @@ export class Navigator {
    * Вызывает событие `popstate`, передавая в качестве состояния
    * объект или null.
    * */
-  private dispatch(state: Record<string, string> | null) {
+  private dispatch<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 }
