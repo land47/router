@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
+    "target": "ES6",
     "module": "commonjs",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react",
     "declaration": true,
     "sourceMap": true,
@@ -18,7 +14,6 @@
     "alwaysStrict": true,
     "noUncheckedIndexedAccess": true,
     "moduleResolution": "node",
-    "baseUrl": "src",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -28,6 +23,6 @@
     "allowSyntheticDefaultImports": false,
     "isolatedModules": true,
     "noImplicitAny": true,
-    "suppressExcessPropertyErrors": true,
+    "suppressExcessPropertyErrors": true
   }
 }
