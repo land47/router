@@ -18,7 +18,7 @@ export function useRouter() {
         state
       )
     },
-    []
+    [location]
   )
 
   let back = useCallback(() => {
