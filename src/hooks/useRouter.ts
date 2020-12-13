@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { ApplicationStructure } from '../shared/types'
+import { ApplicationStructure, HistoryItemState } from '../shared/types'
 import { useLocation, useNavigator } from '../hooks'
 import { withoutValue } from '../utils'
 
@@ -10,17 +10,26 @@ export function useRouter() {
   let navigator = useNavigator()
   let location = useLocation()
 
-  let push = useCallback((structure: ApplicationStructure) => {
-    navigator.push(withoutValue({ ...location, ...structure }, undefined))
-  }, [])
+  let push = useCallback(
+    <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
+      navigator.push(
+        withoutValue({ ...location, ...structure }, undefined),
+        state
+      )
+    },
+    []
+  )
 
   let back = useCallback(() => {
     navigator.back()
   }, [])
 
-  let replace = useCallback((structure: ApplicationStructure) => {
-    navigator.replace(withoutValue({ ...location, ...structure }, undefined))
-  }, [])
+  let replace = useCallback(
+    <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
+      navigator.replace(withoutValue(structure, undefined), state)
+    },
+    []
+  )
 
   return { push, back, replace }
 }
