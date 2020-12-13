@@ -1,4 +1,8 @@
-import { HistoryListener, HistoryListenerHandler } from '../shared/types'
+import {
+  HistoryListener,
+  HistoryListenerHandler,
+  HistoryItemState,
+} from '../shared/types'
 import { isEqualArrays, hasIntersections } from '../utils'
 
 export class Navigator {
@@ -98,16 +102,22 @@ export class Navigator {
   /**
    * Добавляет новую запись в историю, вызывая событие `popstate`.
    * */
-  readonly push = (record: Record<string, string>) => {
-    this.history.pushState('', '', this.deserialize(record))
+  readonly push = <T>(
+    record: Record<string, string>,
+    state: HistoryItemState<T> = {}
+  ) => {
+    this.history.pushState(state, '', this.deserialize(record))
     this.dispatch(null)
   }
 
   /**
    * Заменяет текущую запись в истории, вызывая событие `popstate`.
    * */
-  readonly replace = (record: Record<string, string>) => {
-    this.history.replaceState('', '', this.deserialize(record))
+  readonly replace = <T>(
+    record: Record<string, string>,
+    state: HistoryItemState<T> = {}
+  ) => {
+    this.history.replaceState(state, '', this.deserialize(record))
     this.dispatch(null)
   }
 
