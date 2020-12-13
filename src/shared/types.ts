@@ -17,3 +17,10 @@ export type HistoryListener<K extends string[] = string[]> = {
   keys: string[]
   handler: HistoryListenerHandler<K>
 }
+
+/**
+ * Структура приложения.
+ * */
+export type ApplicationStructure = {
+  [K in 'story' | 'view' | 'panel']?: string
+}
