@@ -12,7 +12,13 @@ export function useStructure<S extends ApplicationStructure>(initial: S) {
   let navigator = useNavigator()
 
   useEffect(() => {
+    let hash = window.location.hash.slice(1)
+
     navigator.replace(withoutValue(initial, undefined))
+
+    if (hash) {
+      navigator.push(navigator.serialize(hash))
+    }
   }, [])
 
   return (search as S) || initial
