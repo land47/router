@@ -1,3 +1,3 @@
 export { Navigator } from './base'
-export { useNavigator, useStructure } from './hooks'
+export { useNavigator, useStructure, useRouter } from './hooks'
 export { NavigatorContext } from './contexts'
