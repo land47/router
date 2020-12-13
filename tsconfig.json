@@ -20,7 +20,7 @@
     "allowUnreachableCode": false,
     "pretty": true,
     "noEmitOnError": true,
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "noImplicitAny": true,
     "suppressExcessPropertyErrors": true
