@@ -9,11 +9,12 @@ import { withoutValue } from '../utils'
 export function useRouter() {
   let navigator = useNavigator()
   let location = useLocation()
+  let excludeValues = [null, undefined, 'null', 'undefined']
 
   let push = useCallback(
     <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
       navigator.push(
-        withoutValue({ ...location, ...structure }, undefined),
+        withoutValue({ ...location, ...structure }, ...excludeValues),
         state
       )
     },
@@ -26,10 +27,14 @@ export function useRouter() {
 
   let replace = useCallback(
     <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
-      navigator.replace(withoutValue(structure, undefined), state)
+      navigator.replace(withoutValue(structure, ...excludeValues), state)
     },
     []
   )
 
-  return { push, back, replace }
+  let go = useCallback((delta: number) => {
+    navigator.go(delta)
+  }, [])
+
+  return { push, back, replace, go }
 }
