@@ -1,1 +1,2 @@
-export { Navigator } from './base/Navigator'
+export { Navigator } from 'base'
+export { useNavigator } from 'hooks'
