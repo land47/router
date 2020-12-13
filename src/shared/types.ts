@@ -28,4 +28,4 @@ export type ApplicationStructure = {
 /**
  * Состояние записи (хранится и может быть доступно вместе с ней)
  * */
-export type RecordState<T> = Record<string, T>
+export type HistoryItemState<T> = Record<string, T>
