@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { ApplicationStructure } from '../shared/types'
-import { useNavigator } from '../hooks'
+import { useLocation, useNavigator } from '../hooks'
 import { withoutValue } from '../utils'
 
 /**
@@ -8,9 +8,10 @@ import { withoutValue } from '../utils'
  * */
 export function useRouter() {
   let navigator = useNavigator()
+  let location = useLocation()
 
   let push = useCallback((structure: ApplicationStructure) => {
-    navigator.push(withoutValue(structure, undefined))
+    navigator.push(withoutValue({ ...location, ...structure }, undefined))
   }, [])
 
   let back = useCallback(() => {
@@ -18,7 +19,7 @@ export function useRouter() {
   }, [])
 
   let replace = useCallback((structure: ApplicationStructure) => {
-    navigator.replace(withoutValue(structure, undefined))
+    navigator.replace(withoutValue({ ...location, ...structure }, undefined))
   }, [])
 
   return { push, back, replace }
