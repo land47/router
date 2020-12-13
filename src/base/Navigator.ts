@@ -1,5 +1,5 @@
-import { HistoryListener, HistoryListenerHandler } from 'shared/types'
-import { isEqualArrays, hasIntersections } from 'utils'
+import { HistoryListener, HistoryListenerHandler } from '../shared/types'
+import { isEqualArrays, hasIntersections } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
