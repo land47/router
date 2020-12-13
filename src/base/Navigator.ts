@@ -13,16 +13,20 @@ export class Navigator {
    *
    * 1 – Сериализация URL-параметров в объект.
    * 2 – Поиск всех слушателей, которым нужна текущая запись.
-   * 3 – Отправка записи в виде объекта слушателям.
+   * 3 – Поиск слушателей, которые подписанны на любое изменение истории.
+   * 4 – Отправка записи в виде объекта слушателям.
    * */
   private readonly lifecycle = () => {
     // step 1
     let serialized = this.serialize(this.location.search)
 
-    // step 2
-    let subscribers = this.findListenersByKeys(Object.keys(serialized))
+    // step 2 & step 3
+    let subscribers = this.findListenersByKeys([
+      ...Object.keys(serialized),
+      '*',
+    ])
 
-    // step 3
+    // step 4
     subscribers.forEach(listener => listener.handler(serialized))
   }
 
