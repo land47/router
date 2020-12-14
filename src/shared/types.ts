@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 /**
  * Запись в истории, представленная в виде объекта.
  * */
@@ -28,6 +30,16 @@ export type ApplicationStructure = {
 
 export type PopoutsStructure = {
   modal?: null | string
+}
+
+export type Snackbar = ReactNode
+
+/**
+ * Интерфейс работы со снэкбаром.
+ * */
+export type SnackbarControls = {
+  snackbar: Snackbar
+  setSnackbar(snackbar: Snackbar): void
 }
 
 /**
