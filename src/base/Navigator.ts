@@ -7,6 +7,11 @@ import { isEqualArrays, hasIntersections } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
+  /**
+   * Список задач, которые будут выполненны при каждом
+   * вызове жизненного цикла.
+   * */
+  private readonly tasks: VoidFunction[] = []
   private frozen = false
 
   constructor() {
@@ -17,27 +22,31 @@ export class Navigator {
    * Жизненный цикл, через который проходит каждая запись в истории.
    *
    * 1 – Если навигатор заморожен, пропускаем следующие шаги.
-   * 2 – Сериализация URL-параметров в объект.
-   * 3 – Поиск всех слушателей, которым нужна текущая запись.
-   * 4 – Поиск слушателей, которые подписанны на любое изменение истории.
-   * 5 – Отправка записи в виде объекта слушателям.
+   * 2 – Вызываем все задачи.
+   * 3 – Сериализация URL-параметров в объект.
+   * 4 – Поиск всех слушателей, которым нужна текущая запись.
+   * 5 – Поиск слушателей, которые подписанны на любое изменение истории.
+   * 6 – Отправка записи в виде объекта слушателям.
    * */
   private readonly lifecycle = () => {
-    // step 1
+    // 1
     if (this.frozen) {
       return
     }
 
-    // step 2
+    // 2
+    this.tasks.forEach(task => task())
+
+    // 3
     let serialized = this.serialize(this.location.search)
 
-    // step 3 & step 4
+    // 4 & 5
     let subscribers = this.findListenersByKeys([
       ...Object.keys(serialized),
       '*',
     ])
 
-    // step 5
+    // 6
     subscribers.forEach(listener => listener.handler(serialized))
   }
 
@@ -67,6 +76,22 @@ export class Navigator {
     )
 
     index && this.listeners.splice(index, 1)
+  }
+
+  /**
+   * Создаёт задачу, которая будет выполнена вначале
+   * каждого жизненного цикла.
+   * */
+  readonly createTask = (task: VoidFunction) => {
+    this.tasks.push(task)
+  }
+
+  /**
+   * Удаляет задачу.
+   * */
+  readonly removeTask = (task: VoidFunction) => {
+    let index = this.tasks.findIndex(e => e === task)
+    index && this.tasks.splice(index, 1)
   }
 
   /**
