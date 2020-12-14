@@ -38,8 +38,8 @@ export type Snackbar = ReactNode
  * Интерфейс работы со снэкбаром.
  * */
 export type SnackbarControls = {
-  snackbar: Snackbar
   setSnackbar(snackbar: Snackbar): void
+  closeSnackbar(): void
 }
 
 /**
