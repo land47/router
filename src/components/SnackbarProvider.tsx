@@ -1,5 +1,21 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, memo, useCallback, useEffect, useState } from 'react'
 import { SnackbarContext } from '../contexts'
+import { SnackbarControls } from '../shared/types'
+
+/**
+ * Во избежание лишних рендеров проводим элементы управления
+ * снэкбаром отдельным компонентом.
+ * */
+let ControlsProvider: FC<{ controls: SnackbarControls }> = memo(
+  ({ controls, children }) => {
+    return (
+      <SnackbarContext.Provider value={controls}>
+        {children}
+      </SnackbarContext.Provider>
+    )
+  },
+  () => true
+)
 
 /**
  * Проводит всему приложению доступ до управления снэкбарами.
@@ -23,10 +39,9 @@ export let SnackbarProvider: FC = ({ children }) => {
   return (
     <>
       {snackbar}
-
-      <SnackbarContext.Provider value={{ snackbar, setSnackbar }}>
+      <ControlsProvider controls={{ setSnackbar, closeSnackbar }}>
         {children}
-      </SnackbarContext.Provider>
+      </ControlsProvider>
     </>
   )
 }
