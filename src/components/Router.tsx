@@ -1,14 +1,13 @@
 import React, { FC } from 'react'
-import { Navigator } from '../base'
-import { NavigatorContext } from '../contexts'
+import { NavigatorProvider, SnackbarProvider } from '../components'
 
 /**
- * Проводит всему приложению доступ до навигатора.
+ * Оборачивает приложение в необходимые провайдеры.
  * */
 export let Router: FC = ({ children }) => {
   return (
-    <NavigatorContext.Provider value={new Navigator()}>
-      {children}
-    </NavigatorContext.Provider>
+    <NavigatorProvider>
+      <SnackbarProvider>{children}</SnackbarProvider>
+    </NavigatorProvider>
   )
 }
