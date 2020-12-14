@@ -7,6 +7,7 @@ import { isEqualArrays, hasIntersections } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
+  private frozen = false
 
   constructor() {
     window.addEventListener('popstate', this.lifecycle)
@@ -15,22 +16,28 @@ export class Navigator {
   /**
    * Жизненный цикл, через который проходит каждая запись в истории.
    *
-   * 1 – Сериализация URL-параметров в объект.
-   * 2 – Поиск всех слушателей, которым нужна текущая запись.
-   * 3 – Поиск слушателей, которые подписанны на любое изменение истории.
-   * 4 – Отправка записи в виде объекта слушателям.
+   * 1 – Если навигатор заморожен, пропускаем следующие шаги.
+   * 2 – Сериализация URL-параметров в объект.
+   * 3 – Поиск всех слушателей, которым нужна текущая запись.
+   * 4 – Поиск слушателей, которые подписанны на любое изменение истории.
+   * 5 – Отправка записи в виде объекта слушателям.
    * */
   private readonly lifecycle = () => {
     // step 1
+    if (this.frozen) {
+      return
+    }
+
+    // step 2
     let serialized = this.serialize(this.location.search)
 
-    // step 2 & step 3
+    // step 3 & step 4
     let subscribers = this.findListenersByKeys([
       ...Object.keys(serialized),
       '*',
     ])
 
-    // step 4
+    // step 5
     subscribers.forEach(listener => listener.handler(serialized))
   }
 
@@ -144,5 +151,20 @@ export class Navigator {
    * */
   private dispatch<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
+  }
+
+  /**
+   * Замораживает навигатор. Пока он заморожен, жизненный цикл
+   * будет пропускать свою работу.
+   * */
+  readonly freeze = () => {
+    this.frozen = true
+  }
+
+  /**
+   * Размораживает навигатор.
+   * */
+  readonly unfreeze = () => {
+    this.frozen = false
   }
 }
