@@ -1,6 +1,7 @@
 import React, { FC, memo, useCallback, useEffect, useState } from 'react'
 import { SnackbarContext } from '../contexts'
 import { SnackbarControls } from '../shared/types'
+import { useNavigator } from '../hooks'
 
 /**
  * Во избежание лишних рендеров проводим элементы управления
@@ -22,6 +23,7 @@ let ControlsProvider: FC<{ controls: SnackbarControls }> = memo(
  * */
 export let SnackbarProvider: FC = ({ children }) => {
   let [snackbar, setSnackbar] = useState(null)
+  let navigator = useNavigator()
 
   let closeSnackbar = useCallback(() => {
     setSnackbar(null)
@@ -32,8 +34,8 @@ export let SnackbarProvider: FC = ({ children }) => {
    * Вроде как улучшает UX, но это не точно...
    * */
   useEffect(() => {
-    window.addEventListener('popstate', closeSnackbar)
-    return () => window.removeEventListener('popstate', closeSnackbar)
+    navigator.createTask(closeSnackbar)
+    return () => navigator.removeTask(closeSnackbar)
   }, [])
 
   return (
