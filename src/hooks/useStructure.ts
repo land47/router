@@ -15,18 +15,16 @@ export function useStructure<S extends ApplicationStructure, T>(
   let router = useRouter()
 
   useEffect(() => {
-    // Фикс повторного первого рендера приложения
-    navigator.freeze()
-
     let hash = window.location.hash.slice(1)
 
+    // Фикс повторного первого рендера приложения
+    navigator.freeze()
     router.replace(initial, options)
+    navigator.unfreeze()
 
     if (hash) {
       router.push(navigator.serialize(hash))
     }
-
-    navigator.unfreeze()
   }, [])
 
   return Object.assign({ modal: null }, search || initial) as S
