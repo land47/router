@@ -7,4 +7,4 @@ export {
   useSnackbar,
 } from './hooks'
 export { NavigatorContext } from './contexts'
-export { Router } from './components'
+export { Router, Link } from './components'
