@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { NavigatorProvider, SnackbarProvider } from '../components'
+import { NavigatorProvider, SnackbarProvider } from './providers'
 
 /**
  * Оборачивает приложение в необходимые провайдеры.
