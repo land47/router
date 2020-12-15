@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useThrottledState } from '@unexp/use-throttled-state'
 import { SerializedURLParams } from '../shared/types'
 import { useNavigator } from '../hooks'
-import { useThrottledState } from '@unexp/use-throttled-state'
 
 /**
  * Подписывается на изменения URL-параметров, и если в них
