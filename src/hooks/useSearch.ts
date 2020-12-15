@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SerializedURLParams } from '../shared/types'
 import { useNavigator } from '../hooks'
+import { useThrottledState } from '@unexp/use-throttled-state'
 
 /**
  * Подписывается на изменения URL-параметров, и если в них
@@ -14,9 +15,14 @@ import { useNavigator } from '../hooks'
  * // search = { panel: 'info' }
  * ```
  * */
-export function useSearch<K extends string[]>(keys: K) {
+export function useSearch<K extends string[]>(keys: K, throttleMs: number = 0) {
   let navigator = useNavigator()
-  let [searchParams, setSearchParams] = useState<SerializedURLParams<K>>()
+
+  // fix: троттлинг для фикса #1
+  // https://github.com/profilemyprofile/router/issues/1
+  let [searchParams, setSearchParams] = useThrottledState<
+    SerializedURLParams<K> | undefined
+  >(void 0, throttleMs)
 
   useEffect(() => {
     navigator.createListener(keys, setSearchParams)
