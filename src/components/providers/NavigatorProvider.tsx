@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { Navigator } from '../base'
-import { NavigatorContext } from '../contexts'
+import { Navigator } from '../../base'
+import { NavigatorContext } from '../../contexts'
 
 /**
  * Проводит всему приложению доступ до навигатора.

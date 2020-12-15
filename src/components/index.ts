@@ -1,3 +1,3 @@
 export { Router } from './Router'
-export { NavigatorProvider } from './NavigatorProvider'
-export { SnackbarProvider } from './SnackbarProvider'
+export { NavigatorProvider } from './providers/NavigatorProvider'
+export { SnackbarProvider } from './providers/SnackbarProvider'

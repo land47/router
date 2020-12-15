@@ -1,7 +1,7 @@
 import React, { FC, memo, useCallback, useEffect, useState } from 'react'
-import { SnackbarContext } from '../contexts'
-import { SnackbarControls } from '../shared/types'
-import { useNavigator } from '../hooks'
+import { SnackbarContext } from '../../contexts'
+import { SnackbarControls } from '../../shared/types'
+import { useNavigator } from '../../hooks'
 
 /**
  * Во избежание лишних рендеров проводим элементы управления
