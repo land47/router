@@ -3,7 +3,7 @@ import {
   HistoryListenerHandler,
   HistoryItemState,
 } from '../shared/types'
-import { isEqualArrays, hasIntersections } from '../utils'
+import { isEqualArrays, hasIntersections, isEqualObjects } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
@@ -133,11 +133,19 @@ export class Navigator {
 
   /**
    * Добавляет новую запись в историю, вызывая событие `popstate`.
+   * Если текущая запись в истории равна новой – пропускает добавление.
    * */
   readonly push = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
+    if (
+      this.deserialize(record) === this.location.search &&
+      isEqualObjects(record, this.history.state)
+    ) {
+      return
+    }
+
     this.history.pushState(state, '', this.deserialize(record))
     this.dispatch(state)
   }
