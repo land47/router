@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
 import { useNavigator, useRouter, useSearch } from '../hooks'
 
@@ -10,7 +10,7 @@ export function useStructure<S extends ApplicationStructure, T>(
   initial: S,
   options: HistoryItemState<T> = {}
 ) {
-  let search = useSearch(Object.keys(initial))
+  let search = useSearch(Object.keys(initial), 800)
   let navigator = useNavigator()
   let router = useRouter()
 
@@ -27,5 +27,9 @@ export function useStructure<S extends ApplicationStructure, T>(
     }
   }, [])
 
-  return Object.assign({ modal: null }, search || initial) as S
+  let structure = useMemo(() => {
+    return Object.assign({ modal: null }, search || initial)
+  }, [search, initial])
+
+  return structure as S
 }
