@@ -36,7 +36,6 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "@unexp/use-throttled-state": "1.0.1",
-    "use-throttled-state": "^1.0.0"
+    "@unexp/use-throttled-state": "1.0.1"
   }
 }
