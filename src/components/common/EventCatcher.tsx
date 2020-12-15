@@ -5,6 +5,9 @@ export type EventCatcherProps = {
   handler(): void | PromiseLike<void>
 }
 
+/**
+ * Компонент для отслеживания событий внутри него.
+ * */
 export let EventCatcher: FC<EventCatcherProps> = ({
   type,
   handler,
