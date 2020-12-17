@@ -3,7 +3,10 @@ import { ReactNode } from 'react'
 /**
  * Запись в истории, представленная в виде объекта.
  * */
-export type SerializedURLParams<K extends string[]> = Record<K[number], string>
+export type SerializedURLParams<K extends string[] = string[]> = Record<
+  K[number],
+  string
+>
 
 /**
  * Обработчик изменения истории.
