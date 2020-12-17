@@ -2,6 +2,7 @@ import {
   HistoryListener,
   HistoryListenerHandler,
   HistoryItemState,
+  SerializedURLParams,
 } from '../shared/types'
 import { isEqualArrays, hasIntersections, isEqualObjects } from '../utils'
 
@@ -38,7 +39,7 @@ export class Navigator {
     this.tasks.forEach(task => task())
 
     // 3
-    let serialized = this.serialize(this.location.search)
+    let serialized = this.convertSearchParams(this.location.search)
 
     // 4 & 5
     let subscribers = this.findListenersByKeys([
@@ -109,17 +110,29 @@ export class Navigator {
   }
 
   /**
-   * Сериализует URL-параметры в объект.
+   * Преобразует строку URL-параметров в объект.
+   *
+   * ```
+   * ?panel=info => { panel: 'info' }
+   * ```
    * */
-  serialize(search: string) {
-    return Object.fromEntries(new URLSearchParams(search))
-  }
-
+  convertSearchParams(search: string): SerializedURLParams
   /**
-   * Десериализует объект в строку URL-параметров.
+   * Преобразует объект в строку URL-параметров.
+   *
+   * ```
+   * { panel: 'info' } => ?panel=info
+   * ```
    * */
-  deserialize(object: Record<string, string>) {
-    return '?' + new URLSearchParams(object)
+  convertSearchParams(search: SerializedURLParams): string
+  convertSearchParams(
+    search: string | SerializedURLParams
+  ): string | SerializedURLParams {
+    if (typeof search === 'string') {
+      return Object.fromEntries(new URLSearchParams(search))
+    }
+
+    return '?' + new URLSearchParams(search)
   }
 
   /**
@@ -140,13 +153,13 @@ export class Navigator {
     state: HistoryItemState<T> = {}
   ) => {
     if (
-      this.deserialize(record) === this.location.search &&
+      this.convertSearchParams(record) === this.location.search &&
       isEqualObjects(record, this.history.state)
     ) {
       return
     }
 
-    this.history.pushState(state, '', this.deserialize(record))
+    this.history.pushState(state, '', this.convertSearchParams(record))
     this.dispatch(state)
   }
 
@@ -157,7 +170,7 @@ export class Navigator {
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
-    this.history.replaceState(state, '', this.deserialize(record))
+    this.history.replaceState(state, '', this.convertSearchParams(record))
     this.dispatch(state)
   }
 
