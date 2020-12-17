@@ -21,34 +21,33 @@ export class Navigator {
 
   /**
    * Жизненный цикл, через который проходит каждая запись в истории.
-   *
-   * 1 – Если навигатор заморожен, пропускаем следующие шаги.
-   * 2 – Вызываем все задачи.
-   * 3 – Сериализация URL-параметров в объект.
-   * 4 – Поиск всех слушателей, которым нужна текущая запись.
-   * 5 – Поиск слушателей, которые подписанны на любое изменение истории.
-   * 6 – Отправка записи в виде объекта слушателям.
    * */
   private readonly lifecycle = () => {
-    // 1
     if (this.isFrozenLifecycle) {
       return
     }
 
-    // 2
+    this.syncRunTasks()
+    this.getListenersForCurrentLocation().forEach(({ handler }) =>
+      handler(this.convertSearchParams(this.location.search))
+    )
+  }
+
+  /**
+   * Выполнение всех задач из списка.
+   * */
+  private syncRunTasks = () => {
     this.tasks.forEach(task => task())
+  }
 
-    // 3
-    let serialized = this.convertSearchParams(this.location.search)
-
-    // 4 & 5
-    let subscribers = this.findListenersByKeys([
-      ...Object.keys(serialized),
+  /**
+   * Возвращает всех слушателей для текущей записи в истории.
+   * */
+  private getListenersForCurrentLocation() {
+    return this.findListenersByKeys([
+      ...Object.keys(this.convertSearchParams(this.location.search)),
       '*',
     ])
-
-    // 6
-    subscribers.forEach(listener => listener.handler(serialized))
   }
 
   /**
