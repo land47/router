@@ -24,14 +24,36 @@ export type HistoryListener<K extends string[] = string[]> = {
  * Структура приложения.
  * */
 export type ApplicationStructure = {
-  [K in 'story' | 'view' | 'panel']?: string
-} &
-  PopoutsStructure
+  /**
+   * Активная панель (https://vkcom.github.io/VKUI/#view)
+   * */
+  panel?: string
 
-export type PopoutsStructure = {
-  modal?: null | string
+  /**
+   * Активный вью (https://vkcom.github.io/VKUI/#root)
+   * */
+  view?: string
+
+  /**
+   * Активный story (https://vkcom.github.io/VKUI/#epic)
+   * */
+  story?: string
+
+  /**
+   * Активное модальное окно. Если его нужно закрыть – передавать null.
+   * (https://vkcom.github.io/VKUI/#section-modals)
+   * */
+  modal?: string | null
 }
 
+/**
+ * Состояние записи (хранится и может быть доступно вместе с ней)
+ * */
+export type HistoryItemState<T = any> = Record<string, T>
+
+/**
+ * Снэкбары
+ * */
 export type Snackbar = ReactNode
 
 /**
@@ -41,8 +63,3 @@ export type SnackbarControls = {
   setSnackbar(snackbar: Snackbar): void
   closeSnackbar(): void
 }
-
-/**
- * Состояние записи (хранится и может быть доступно вместе с ней)
- * */
-export type HistoryItemState<T> = Record<string, T>
