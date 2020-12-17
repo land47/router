@@ -14,7 +14,10 @@ export function useRouter() {
     <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
       navigator.push(
         withoutValue(
-          { ...navigator.serialize(navigator.location.search), ...structure },
+          {
+            ...navigator.convertSearchParams(navigator.location.search),
+            ...structure,
+          },
           ...excludeValues
         ),
         state

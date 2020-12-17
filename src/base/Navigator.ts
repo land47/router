@@ -2,6 +2,7 @@ import {
   HistoryListener,
   HistoryListenerHandler,
   HistoryItemState,
+  SerializedURLParams,
 } from '../shared/types'
 import { isEqualArrays, hasIntersections, isEqualObjects } from '../utils'
 
@@ -12,7 +13,7 @@ export class Navigator {
    * вызове жизненного цикла.
    * */
   private readonly tasks: VoidFunction[] = []
-  private frozen = false
+  private isFrozenLifecycle = false
 
   constructor() {
     window.addEventListener('popstate', this.lifecycle)
@@ -20,40 +21,40 @@ export class Navigator {
 
   /**
    * Жизненный цикл, через который проходит каждая запись в истории.
-   *
-   * 1 – Если навигатор заморожен, пропускаем следующие шаги.
-   * 2 – Вызываем все задачи.
-   * 3 – Сериализация URL-параметров в объект.
-   * 4 – Поиск всех слушателей, которым нужна текущая запись.
-   * 5 – Поиск слушателей, которые подписанны на любое изменение истории.
-   * 6 – Отправка записи в виде объекта слушателям.
    * */
-  private readonly lifecycle = () => {
-    // 1
-    if (this.frozen) {
+  private lifecycle = () => {
+    if (this.isFrozenLifecycle) {
       return
     }
 
-    // 2
-    this.tasks.forEach(task => task())
-
-    // 3
-    let serialized = this.serialize(this.location.search)
-
-    // 4 & 5
-    let subscribers = this.findListenersByKeys([
-      ...Object.keys(serialized),
-      '*',
-    ])
-
-    // 6
-    subscribers.forEach(listener => listener.handler(serialized))
+    this.syncRunTasks()
+    this.getListenersForCurrentLocation().forEach(({ handler }) =>
+      handler(this.convertSearchParams(this.location.search))
+    )
   }
 
   /**
-   * Создаёт слушатель изменений в истории браузера.
+   * Выполнение всех задач из списка.
    * */
-  readonly createListener = <K extends string[]>(
+  private syncRunTasks = () => {
+    this.tasks.forEach(task => task())
+  }
+
+  /**
+   * Возвращает всех слушателей для текущей записи в истории.
+   * */
+  private getListenersForCurrentLocation() {
+    return this.findListenersByKeys([
+      ...Object.keys(this.convertSearchParams(this.location.search)),
+      '*',
+    ])
+  }
+
+  /**
+   * Создаёт слушатель, который реагирует на изменения URL-параметров
+   * в истории браузера.
+   * */
+  createListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
   ) => {
@@ -63,10 +64,7 @@ export class Navigator {
     })
   }
 
-  /**
-   * Удаляет слушатель изменений, если такой найден.
-   * */
-  readonly removeListener = <K extends string[]>(
+  removeListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
   ) => {
@@ -82,122 +80,126 @@ export class Navigator {
    * Создаёт задачу, которая будет выполнена вначале
    * каждого жизненного цикла.
    * */
-  readonly createTask = (task: VoidFunction) => {
+  createTask = (task: VoidFunction) => {
     this.tasks.push(task)
   }
 
-  /**
-   * Удаляет задачу.
-   * */
-  readonly removeTask = (task: VoidFunction) => {
+  removeTask = (task: VoidFunction) => {
     let index = this.tasks.findIndex(e => e === task)
     index && this.tasks.splice(index, 1)
   }
 
-  /**
-   * Получение текущей локации. (Location API)
-   * */
   get location() {
     return window.location
   }
 
-  /**
-   * Получение текущей истории. (History API)
-   * */
   get history() {
     return window.history
   }
 
   /**
-   * Сериализует URL-параметры в объект.
+   * Преобразует строку URL-параметров в объект.
+   *
+   * ```
+   * ?panel=info => { panel: 'info' }
+   * ```
    * */
-  serialize(search: string) {
-    return Object.fromEntries(new URLSearchParams(search))
-  }
-
+  convertSearchParams(search: string): SerializedURLParams
   /**
-   * Десериализует объект в строку URL-параметров.
+   * Преобразует объект в строку URL-параметров.
+   *
+   * ```
+   * { panel: 'info' } => ?panel=info
+   * ```
    * */
-  deserialize(object: Record<string, string>) {
-    return '?' + new URLSearchParams(object)
+  convertSearchParams(search: SerializedURLParams): string
+  convertSearchParams(
+    search: string | SerializedURLParams
+  ): string | SerializedURLParams {
+    if (typeof search === 'string') {
+      return Object.fromEntries(new URLSearchParams(search))
+    }
+
+    return '?' + new URLSearchParams(search)
   }
 
   /**
    * Ищет слушателей по массиву с ключами.
    * */
-  private readonly findListenersByKeys = (keys: string[]) => {
+  private findListenersByKeys = (keys: string[]) => {
     return this.listeners.filter(listener =>
       hasIntersections(keys, listener.keys)
     )
   }
 
   /**
-   * Добавляет новую запись в историю, вызывая событие `popstate`.
-   * Если текущая запись в истории равна новой – пропускает добавление.
+   * Добавляет новую запись в историю браузера. Если новая запись
+   * равна текущей, то метод пропускает добавление.
+   *
+   * https://developer.mozilla.org/ru/docs/Web/API/History/pushState
    * */
-  readonly push = <T>(
+  push = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
     if (
-      this.deserialize(record) === this.location.search &&
+      this.convertSearchParams(record) === this.location.search &&
       isEqualObjects(record, this.history.state)
     ) {
       return
     }
 
-    this.history.pushState(state, '', this.deserialize(record))
-    this.dispatch(state)
+    this.history.pushState(state, '', this.convertSearchParams(record))
+    this.dispatchEvent(state)
   }
 
   /**
-   * Заменяет текущую запись в истории, вызывая событие `popstate`.
+   * Изменяет текущую запись в истории. Данный метод особенно полезен,
+   * когда вы хотите обновить объект состояния или URL текущей записи
+   * в истории в ответ на какое-то действие пользователя.
+   *
+   * https://developer.mozilla.org/ru/docs/Web/API/History/replaceState
    * */
-  readonly replace = <T>(
+  replace = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
-    this.history.replaceState(state, '', this.deserialize(record))
-    this.dispatch(state)
+    this.history.replaceState(state, '', this.convertSearchParams(record))
+    this.dispatchEvent(state)
   }
 
   /**
-   * Возвращает на прошлую запись в истории, или если такой нет,
+   * Возвращает на прошлую страницу в истории, или если такой нет,
    * закрывает приложение.
    * */
-  readonly back = () => {
-    this.history.back()
-  }
+  back = this.history.back
 
   /**
    * Выполняет переход на определенную страницу в истории текущей сессии.
    * С его помощью можно перемещаться как вперед, так и назад,
    * в зависимости от значения параметра.
    * */
-  readonly go = (delta: number) => {
-    this.history.go(delta)
-  }
+  go = this.history.go
 
   /**
    * Вызывает событие `popstate`, передавая в качестве состояния
-   * объект или null.
+   * передаваемый объект.
    * */
-  private dispatch<T>(state: HistoryItemState<T>) {
+  dispatchEvent<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 
   /**
-   * Замораживает навигатор. Пока он заморожен, жизненный цикл
-   * будет пропускать свою работу.
+   * Приостанавливает работу жизненого цикла.
    * */
-  readonly freeze = () => {
-    this.frozen = true
+  freezeLifecycle = () => {
+    this.isFrozenLifecycle = true
   }
 
   /**
-   * Размораживает навигатор.
+   * Возобновляет работу жизненного цикла.
    * */
-  readonly unfreeze = () => {
-    this.frozen = false
+  unfreezeLifecycle = () => {
+    this.isFrozenLifecycle = false
   }
 }
