@@ -23,7 +23,7 @@ export function useStructure<S extends ApplicationStructure, T>(
     navigator.unfreeze()
 
     if (hash) {
-      router.push(navigator.serialize(hash))
+      router.push(navigator.convertSearchParams(hash))
     }
   }, [])
 
