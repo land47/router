@@ -18,9 +18,9 @@ export function useStructure<S extends ApplicationStructure, T>(
     let hash = window.location.hash.slice(1)
 
     // Фикс повторного первого рендера приложения
-    navigator.freeze()
+    navigator.freezeLifecycle()
     router.replace(initial, options)
-    navigator.unfreeze()
+    navigator.unfreezeLifecycle()
 
     if (hash) {
       router.push(navigator.convertSearchParams(hash))
