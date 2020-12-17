@@ -4,7 +4,7 @@ import { APP_MUST_BE_WRAPPED_IN_ROUTER } from '../shared/errors'
 
 /**
  * Возвращает объект (инстанс) навигатора.
- * */
+ */
 export function useNavigator() {
   let navigator = useContext(NavigatorContext)
 
