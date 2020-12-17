@@ -22,7 +22,7 @@ export class Navigator {
   /**
    * Жизненный цикл, через который проходит каждая запись в истории.
    * */
-  private readonly lifecycle = () => {
+  private lifecycle = () => {
     if (this.isFrozenLifecycle) {
       return
     }
@@ -53,7 +53,7 @@ export class Navigator {
   /**
    * Создаёт слушатель изменений в истории браузера.
    * */
-  readonly createListener = <K extends string[]>(
+  createListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
   ) => {
@@ -66,7 +66,7 @@ export class Navigator {
   /**
    * Удаляет слушатель изменений, если такой найден.
    * */
-  readonly removeListener = <K extends string[]>(
+  removeListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
   ) => {
@@ -82,14 +82,14 @@ export class Navigator {
    * Создаёт задачу, которая будет выполнена вначале
    * каждого жизненного цикла.
    * */
-  readonly createTask = (task: VoidFunction) => {
+  createTask = (task: VoidFunction) => {
     this.tasks.push(task)
   }
 
   /**
    * Удаляет задачу.
    * */
-  readonly removeTask = (task: VoidFunction) => {
+  removeTask = (task: VoidFunction) => {
     let index = this.tasks.findIndex(e => e === task)
     index && this.tasks.splice(index, 1)
   }
@@ -137,7 +137,7 @@ export class Navigator {
   /**
    * Ищет слушателей по массиву с ключами.
    * */
-  private readonly findListenersByKeys = (keys: string[]) => {
+  private findListenersByKeys = (keys: string[]) => {
     return this.listeners.filter(listener =>
       hasIntersections(keys, listener.keys)
     )
@@ -147,7 +147,7 @@ export class Navigator {
    * Добавляет новую запись в историю, вызывая событие `popstate`.
    * Если текущая запись в истории равна новой – пропускает добавление.
    * */
-  readonly push = <T>(
+  push = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
@@ -165,7 +165,7 @@ export class Navigator {
   /**
    * Заменяет текущую запись в истории, вызывая событие `popstate`.
    * */
-  readonly replace = <T>(
+  replace = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
@@ -174,41 +174,37 @@ export class Navigator {
   }
 
   /**
-   * Возвращает на прошлую запись в истории, или если такой нет,
+   * Возвращает на прошлую страницу в истории, или если такой нет,
    * закрывает приложение.
    * */
-  readonly back = () => {
-    this.history.back()
-  }
+  back = this.history.back
 
   /**
    * Выполняет переход на определенную страницу в истории текущей сессии.
    * С его помощью можно перемещаться как вперед, так и назад,
    * в зависимости от значения параметра.
    * */
-  readonly go = (delta: number) => {
-    this.history.go(delta)
-  }
+  go = this.history.go
 
   /**
    * Вызывает событие `popstate`, передавая в качестве состояния
    * объект или null.
    * */
-  private dispatchEvent<T>(state: HistoryItemState<T>) {
+  dispatchEvent<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 
   /**
    * Замораживает работу жизненого цикла.
    * */
-  readonly freezeLifecycle = () => {
+  freezeLifecycle = () => {
     this.isFrozenLifecycle = true
   }
 
   /**
    * Возобновляет работу жизненного цикла.
    * */
-  readonly unfreezeLifecycle = () => {
+  unfreezeLifecycle = () => {
     this.isFrozenLifecycle = false
   }
 }
