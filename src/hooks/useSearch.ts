@@ -14,7 +14,7 @@ import { useNavigator } from '../hooks'
  * // URL Search: ?panel=info&view=home
  * // search = { panel: 'info' }
  * ```
- * */
+ */
 export function useSearch<K extends string[]>(keys: K, throttleMs: number = 0) {
   let navigator = useNavigator()
 

@@ -5,7 +5,7 @@ import { withoutValue } from '../utils'
 
 /**
  * Возвращает интерфейс для работы с навигацией приложения.
- * */
+ */
 export function useRouter() {
   let navigator = useNavigator()
   let excludeValues = [null, undefined, 'null', 'undefined']
