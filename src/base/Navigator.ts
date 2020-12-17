@@ -4,7 +4,7 @@ import {
   HistoryItemState,
   SerializedURLParams,
 } from '../shared/types'
-import { isEqualArrays, hasIntersections, isEqualObjects } from '../utils'
+import { areArraysEqual, hasIntersections, areObjectsEqual } from '../utils'
 
 export class Navigator {
   private readonly listeners: HistoryListener[] = []
@@ -70,7 +70,7 @@ export class Navigator {
   ) => {
     // prettier-ignore
     let index = this.listeners.findIndex(listener =>
-      listener.handler === handler && isEqualArrays(listener.keys, keys)
+      listener.handler === handler && areArraysEqual(listener.keys, keys)
     )
 
     index && this.listeners.splice(index, 1)
@@ -144,7 +144,7 @@ export class Navigator {
   ) => {
     if (
       this.convertSearchParams(record) === this.location.search &&
-      isEqualObjects(record, this.history.state)
+      areObjectsEqual(record, this.history.state)
     ) {
       return
     }
