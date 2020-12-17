@@ -160,7 +160,7 @@ export class Navigator {
     }
 
     this.history.pushState(state, '', this.convertSearchParams(record))
-    this.dispatch(state)
+    this.dispatchEvent(state)
   }
 
   /**
@@ -171,7 +171,7 @@ export class Navigator {
     state: HistoryItemState<T> = {}
   ) => {
     this.history.replaceState(state, '', this.convertSearchParams(record))
-    this.dispatch(state)
+    this.dispatchEvent(state)
   }
 
   /**
@@ -195,22 +195,21 @@ export class Navigator {
    * Вызывает событие `popstate`, передавая в качестве состояния
    * объект или null.
    * */
-  private dispatch<T>(state: HistoryItemState<T>) {
+  private dispatchEvent<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 
   /**
-   * Замораживает навигатор. Пока он заморожен, жизненный цикл
-   * будет пропускать свою работу.
+   * Замораживает работу жизненого цикла.
    * */
-  readonly freeze = () => {
+  readonly freezeLifecycle = () => {
     this.frozen = true
   }
 
   /**
-   * Размораживает навигатор.
+   * Возобновляет работу жизненного цикла.
    * */
-  readonly unfreeze = () => {
+  readonly unfreezeLifecycle = () => {
     this.frozen = false
   }
 }
