@@ -51,7 +51,8 @@ export class Navigator {
   }
 
   /**
-   * Создаёт слушатель изменений в истории браузера.
+   * Создаёт слушатель, который реагирует на изменения URL-параметров
+   * в истории браузера.
    * */
   createListener = <K extends string[]>(
     keys: K,
@@ -63,9 +64,6 @@ export class Navigator {
     })
   }
 
-  /**
-   * Удаляет слушатель изменений, если такой найден.
-   * */
   removeListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
@@ -86,24 +84,15 @@ export class Navigator {
     this.tasks.push(task)
   }
 
-  /**
-   * Удаляет задачу.
-   * */
   removeTask = (task: VoidFunction) => {
     let index = this.tasks.findIndex(e => e === task)
     index && this.tasks.splice(index, 1)
   }
 
-  /**
-   * Получение текущей локации. (Location API)
-   * */
   get location() {
     return window.location
   }
 
-  /**
-   * Получение текущей истории. (History API)
-   * */
   get history() {
     return window.history
   }
@@ -144,8 +133,10 @@ export class Navigator {
   }
 
   /**
-   * Добавляет новую запись в историю, вызывая событие `popstate`.
-   * Если текущая запись в истории равна новой – пропускает добавление.
+   * Добавляет новую запись в историю браузера. Если новая запись
+   * равна текущей, то метод пропускает добавление.
+   *
+   * https://developer.mozilla.org/ru/docs/Web/API/History/pushState
    * */
   push = <T>(
     record: Record<string, string>,
@@ -163,7 +154,11 @@ export class Navigator {
   }
 
   /**
-   * Заменяет текущую запись в истории, вызывая событие `popstate`.
+   * Изменяет текущую запись в истории. Данный метод особенно полезен,
+   * когда вы хотите обновить объект состояния или URL текущей записи
+   * в истории в ответ на какое-то действие пользователя.
+   *
+   * https://developer.mozilla.org/ru/docs/Web/API/History/replaceState
    * */
   replace = <T>(
     record: Record<string, string>,
@@ -188,14 +183,14 @@ export class Navigator {
 
   /**
    * Вызывает событие `popstate`, передавая в качестве состояния
-   * объект или null.
+   * передаваемый объект.
    * */
   dispatchEvent<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 
   /**
-   * Замораживает работу жизненого цикла.
+   * Приостанавливает работу жизненого цикла.
    * */
   freezeLifecycle = () => {
     this.isFrozenLifecycle = true
