@@ -13,7 +13,7 @@ export class Navigator {
    * вызове жизненного цикла.
    * */
   private readonly tasks: VoidFunction[] = []
-  private frozen = false
+  private isFrozenLifecycle = false
 
   constructor() {
     window.addEventListener('popstate', this.lifecycle)
@@ -31,7 +31,7 @@ export class Navigator {
    * */
   private readonly lifecycle = () => {
     // 1
-    if (this.frozen) {
+    if (this.isFrozenLifecycle) {
       return
     }
 
@@ -203,13 +203,13 @@ export class Navigator {
    * Замораживает работу жизненого цикла.
    * */
   readonly freezeLifecycle = () => {
-    this.frozen = true
+    this.isFrozenLifecycle = true
   }
 
   /**
    * Возобновляет работу жизненного цикла.
    * */
   readonly unfreezeLifecycle = () => {
-    this.frozen = false
+    this.isFrozenLifecycle = false
   }
 }
