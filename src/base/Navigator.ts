@@ -11,7 +11,7 @@ export class Navigator {
   /**
    * Список задач, которые будут выполненны при каждом
    * вызове жизненного цикла.
-   * */
+   */
   private readonly tasks: VoidFunction[] = []
   private isFrozenLifecycle = false
 
@@ -21,7 +21,7 @@ export class Navigator {
 
   /**
    * Жизненный цикл, через который проходит каждая запись в истории.
-   * */
+   */
   private lifecycle = () => {
     if (this.isFrozenLifecycle) {
       return
@@ -35,14 +35,14 @@ export class Navigator {
 
   /**
    * Выполнение всех задач из списка.
-   * */
+   */
   private syncRunTasks = () => {
     this.tasks.forEach(task => task())
   }
 
   /**
    * Возвращает всех слушателей для текущей записи в истории.
-   * */
+   */
   private getListenersForCurrentLocation() {
     return this.findListenersByKeys([
       ...Object.keys(this.convertSearchParams(this.location.search)),
@@ -53,7 +53,7 @@ export class Navigator {
   /**
    * Создаёт слушатель, который реагирует на изменения URL-параметров
    * в истории браузера.
-   * */
+   */
   createListener = <K extends string[]>(
     keys: K,
     handler: HistoryListenerHandler<K>
@@ -73,20 +73,20 @@ export class Navigator {
       listener.handler === handler && areArraysEqual(listener.keys, keys)
     )
 
-    index && this.listeners.splice(index, 1)
+    if (index) this.listeners.splice(index, 1)
   }
 
   /**
    * Создаёт задачу, которая будет выполнена вначале
    * каждого жизненного цикла.
-   * */
+   */
   createTask = (task: VoidFunction) => {
     this.tasks.push(task)
   }
 
   removeTask = (task: VoidFunction) => {
     let index = this.tasks.findIndex(e => e === task)
-    index && this.tasks.splice(index, 1)
+    if (index) this.tasks.splice(index, 1)
   }
 
   get location() {
@@ -103,7 +103,7 @@ export class Navigator {
    * ```
    * ?panel=info => { panel: 'info' }
    * ```
-   * */
+   */
   convertSearchParams(search: string): SerializedURLParams
   /**
    * Преобразует объект в строку URL-параметров.
@@ -111,7 +111,7 @@ export class Navigator {
    * ```
    * { panel: 'info' } => ?panel=info
    * ```
-   * */
+   */
   convertSearchParams(search: SerializedURLParams): string
   convertSearchParams(
     search: string | SerializedURLParams
@@ -125,7 +125,7 @@ export class Navigator {
 
   /**
    * Ищет слушателей по массиву с ключами.
-   * */
+   */
   private findListenersByKeys = (keys: string[]) => {
     return this.listeners.filter(listener =>
       hasIntersections(keys, listener.keys)
@@ -137,7 +137,7 @@ export class Navigator {
    * равна текущей, то метод пропускает добавление.
    *
    * https://developer.mozilla.org/ru/docs/Web/API/History/pushState
-   * */
+   */
   push = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
@@ -159,7 +159,7 @@ export class Navigator {
    * в истории в ответ на какое-то действие пользователя.
    *
    * https://developer.mozilla.org/ru/docs/Web/API/History/replaceState
-   * */
+   */
   replace = <T>(
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
@@ -171,34 +171,34 @@ export class Navigator {
   /**
    * Возвращает на прошлую страницу в истории, или если такой нет,
    * закрывает приложение.
-   * */
+   */
   back = this.history.back
 
   /**
    * Выполняет переход на определенную страницу в истории текущей сессии.
    * С его помощью можно перемещаться как вперед, так и назад,
    * в зависимости от значения параметра.
-   * */
+   */
   go = this.history.go
 
   /**
    * Вызывает событие `popstate`, передавая в качестве состояния
    * передаваемый объект.
-   * */
+   */
   dispatchEvent<T>(state: HistoryItemState<T>) {
     window.dispatchEvent(new PopStateEvent('popstate', { state }))
   }
 
   /**
    * Приостанавливает работу жизненого цикла.
-   * */
+   */
   freezeLifecycle = () => {
     this.isFrozenLifecycle = true
   }
 
   /**
    * Возобновляет работу жизненного цикла.
-   * */
+   */
   unfreezeLifecycle = () => {
     this.isFrozenLifecycle = false
   }
