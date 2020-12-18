@@ -5,7 +5,7 @@ import { useNavigator, useRouter, useSearch } from '../hooks'
 /**
  * Устанавливает структуру приложения и обновляет значения
  * в случае перехода на другое состояние навигации.
- * */
+ */
 export function useStructure<S extends ApplicationStructure, T>(
   initial: S,
   options: HistoryItemState<T> = {}

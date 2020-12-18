@@ -1,17 +1,19 @@
 import { useCallback } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
 import { useNavigator } from '../hooks'
-import { withoutValue } from '../utils'
+import { withoutValue, makeObjectSynchronous } from '../utils'
 
 /**
  * Возвращает интерфейс для работы с навигацией приложения.
- * */
+ */
 export function useRouter() {
   let navigator = useNavigator()
   let excludeValues = [null, undefined, 'null', 'undefined']
 
   let push = useCallback(
-    <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
+    async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
+      let syncState = await makeObjectSynchronous(state)
+
       navigator.push(
         withoutValue(
           {
@@ -20,7 +22,7 @@ export function useRouter() {
           },
           ...excludeValues
         ),
-        state
+        syncState
       )
     },
     [navigator.location.search]
@@ -31,7 +33,7 @@ export function useRouter() {
   }, [])
 
   let replace = useCallback(
-    <T>(structure: ApplicationStructure, state: HistoryItemState<T> = {}) => {
+    (structure: ApplicationStructure, state: HistoryItemState = {}) => {
       navigator.replace(withoutValue(structure, ...excludeValues), state)
     },
     []

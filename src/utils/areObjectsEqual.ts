@@ -1,4 +1,4 @@
-export function isEqualObjects<V, T extends Record<string, V>>(a: T, b: T) {
+export function areObjectsEqual<V, T extends Record<string, V>>(a: T, b: T) {
   if (a === b) {
     return true
   }

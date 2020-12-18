@@ -1,4 +1,5 @@
-export { isEqualArrays } from './isEqualArrays'
+export { areArraysEqual } from './areArraysEqual'
+export { areObjectsEqual } from './areObjectsEqual'
 export { hasIntersections } from './hasIntersections'
 export { withoutValue } from './withoutValue'
-export { isEqualObjects } from './isEqualObjects'
+export { makeObjectSynchronous } from './makeObjectSynchronous'
