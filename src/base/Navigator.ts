@@ -172,14 +172,14 @@ export class Navigator {
    * Возвращает на прошлую страницу в истории, или если такой нет,
    * закрывает приложение.
    */
-  back = () => this.history.back()
+  back = this.history.back.bind(this.history)
 
   /**
    * Выполняет переход на определенную страницу в истории текущей сессии.
    * С его помощью можно перемещаться как вперед, так и назад,
    * в зависимости от значения параметра.
    */
-  go = (delta: number) => this.history.go(delta)
+  go = this.history.go.bind(this.history)
 
   /**
    * Вызывает событие `popstate`, передавая в качестве состояния
