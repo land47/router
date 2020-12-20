@@ -1,6 +1,6 @@
 {
   "name": "@unexp/router",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A very simple router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "main": "dist/index.js",
@@ -16,6 +16,9 @@
     "vkma",
     "navigator"
   ],
+  "scripts": {
+    "prepare": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/profilemyprofile/router"
