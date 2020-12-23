@@ -66,3 +66,7 @@ export type SnackbarControls = {
   setSnackbar(snackbar: Snackbar): void
   closeSnackbar(): void
 }
+
+export type LaunchParamsControls = {
+  search: string
+}
