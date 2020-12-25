@@ -17,7 +17,7 @@
     "navigator"
   ],
   "scripts": {
-    "prepare": "tsc"
+    "prepare": "install-peers"
   },
   "repository": {
     "type": "git",
@@ -28,8 +28,10 @@
   },
   "homepage": "https://github.com/profilemyprofile/router",
   "peerDependencies": {
-    "react": "^17.0.1",
-    "react-scripts": "^4.0.1"
+    "@vkontakte/icons": "^1.69.0",
+    "@vkontakte/vk-bridge": "^2.3.0",
+    "@vkontakte/vkjs": "^0.18.0",
+    "@vkontakte/vkui": "^4.0.3"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
@@ -37,7 +39,5 @@
     "tslint": "^6.1.3",
     "typescript": "^4.1.3"
   },
-  "dependencies": {
-    "@unexp/use-throttled-state": "1.0.1"
-  }
+  "dependencies": {}
 }
