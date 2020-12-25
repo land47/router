@@ -10,7 +10,7 @@ export function useStructure<S extends ApplicationStructure, T>(
   initial: S,
   options: HistoryItemState<T> = {}
 ) {
-  let search = useSearch(Object.keys(initial), 800)
+  let search = useSearch(Object.keys(initial))
   let navigator = useNavigator()
   let router = useRouter()
 
@@ -31,5 +31,5 @@ export function useStructure<S extends ApplicationStructure, T>(
     return Object.assign({ modal: null }, search || initial)
   }, [search, initial])
 
-  return structure as S
+  return structure as { modal: null | string } & S
 }
