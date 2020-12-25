@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { useThrottledState } from '@unexp/use-throttled-state'
+import { useEffect, useState } from 'react'
 import { SerializedURLParams } from '../shared/types'
 import { useNavigator } from '../hooks'
 
@@ -15,14 +14,9 @@ import { useNavigator } from '../hooks'
  * // search = { panel: 'info' }
  * ```
  */
-export function useSearch<K extends string[]>(keys: K, throttleMs: number = 0) {
+export function useSearch<K extends string[]>(keys: K) {
   let navigator = useNavigator()
-
-  // fix: троттлинг для фикса #1
-  // https://github.com/profilemyprofile/router/issues/1
-  let [searchParams, setSearchParams] = useThrottledState<
-    SerializedURLParams<K> | undefined
-  >(void 0, throttleMs)
+  let [searchParams, setSearchParams] = useState<SerializedURLParams<K>>()
 
   useEffect(() => {
     navigator.createListener(keys, setSearchParams)
