@@ -1,4 +1,4 @@
 import { createContext } from 'react'
 import { CacheContainer } from '../base'
 
-export let CacheContext = createContext(new CacheContainer())
+export let CacheContainerContext = createContext(new CacheContainer())
