@@ -16,13 +16,10 @@ export function useRouter() {
   let navigator = useNavigator()
   let cache = useCache()
 
-  async function prepareState(
-    structure: ApplicationStructure,
-    state: HistoryItemState
-  ) {
+  async function prepareState(state: HistoryItemState) {
     // prettier-ignore
     let stateFromCache = cache.load(
-      (structure.panel || '' + structure.view || '' + structure.story || '' + state.key) || Symbol(),
+      state.key || Symbol(),
       state
     ) as HistoryItemState
 
@@ -50,7 +47,8 @@ export function useRouter() {
    *
    * Пример с кэшированием параметров:
    * ```typescript
-   * router.push({ panel: 'profile' }, { user: fetchUser(), key: 1 })
+   * let key = Symbol()
+   * router.push({ panel: 'profile' }, { user: fetchUser(), key })
    * ```
    */
   let push = useCallback(
@@ -63,7 +61,7 @@ export function useRouter() {
           },
           ...excludeValues
         ),
-        await prepareState(structure, state)
+        await prepareState(state)
       )
     },
     [navigator.location.search]
@@ -77,7 +75,7 @@ export function useRouter() {
     async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
       navigator.replace(
         withoutValue(structure, ...excludeValues),
-        await prepareState(structure, state)
+        await prepareState(state)
       )
     },
     []
