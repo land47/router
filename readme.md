@@ -40,8 +40,6 @@ let App = () => {
     </View>
   )
 }
-
-ReactDOM.render(<App />, root)
 ```
 Выглядит довольно просто.
 
