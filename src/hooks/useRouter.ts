@@ -47,8 +47,7 @@ export function useRouter() {
    *
    * Пример с кэшированием параметров:
    * ```typescript
-   * let key = Symbol()
-   * router.push({ panel: 'profile' }, { user: fetchUser(), key })
+   * router.push({ panel: 'profile' }, { user: fetchUser(), 'unique_key' })
    * ```
    */
   let push = useCallback(
