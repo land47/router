@@ -3,7 +3,7 @@ import {
   LaunchParamsProvider,
   NavigatorProvider,
   SnackbarProvider,
-  CacheProvider,
+  CacheContainerProvider,
 } from './providers'
 
 /**
@@ -11,12 +11,12 @@ import {
  * */
 export let Router: FC = ({ children }) => {
   return (
-    <CacheProvider>
+    <CacheContainerProvider>
       <LaunchParamsProvider>
         <NavigatorProvider>
           <SnackbarProvider>{children}</SnackbarProvider>
         </NavigatorProvider>
       </LaunchParamsProvider>
-    </CacheProvider>
+    </CacheContainerProvider>
   )
 }
