@@ -10,7 +10,6 @@
 export async function makeObjectSynchronous<T>(state: Record<string, T>) {
   let keys = Object.keys(state)
   let syncValues = await Promise.all(Object.values(state))
-  let entries = keys.map((key, i) => [key, syncValues[i]])
 
-  return Object.fromEntries(entries)
+  return keys.reduce((acc, key, i) => ({ ...acc, [key]: syncValues[i] }), {})
 }
