@@ -154,6 +154,14 @@ export class Navigator {
   }
 
   /**
+   * Дублирует текущую запись в истории браузера.
+   */
+  duplicateRecord = () => {
+    this.history.pushState(this.history.state, '', this.location.search)
+    this.dispatchEvent(this.history.state)
+  }
+
+  /**
    * Изменяет текущую запись в истории. Данный метод особенно полезен,
    * когда вы хотите обновить объект состояния или URL текущей записи
    * в истории в ответ на какое-то действие пользователя.
