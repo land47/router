@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useNavigator, useRouter, useSearch } from '../hooks'
+import { useNavigator, usePopout, useRouter, useSearch } from '../hooks'
 import { areObjectsEqual } from '../utils'
 
 /**
@@ -14,6 +14,7 @@ export function useStructure<S extends ApplicationStructure, T>(
   let search = useSearch(Object.keys(initial)) as S
   let navigator = useNavigator()
   let router = useRouter()
+  let { popout } = usePopout()
 
   useEffect(() => {
     let hash = window.location.hash.slice(1)
@@ -41,7 +42,7 @@ export function useStructure<S extends ApplicationStructure, T>(
     })
   }, [])
 
-  return useMemo(() => ({ modal: null, ...(search || initial) }), [
+  return useMemo(() => ({ modal: null, ...(search || initial), popout }), [
     search,
     initial,
   ])
