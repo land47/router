@@ -20,8 +20,16 @@ export function useRouter() {
   let navigator = useNavigator()
   let cache = useCache()
 
+  /**
+   * Возвращает обработанное состояние. Кэширует, обрабатывает асинхронные
+   * значения параметров.
+   */
   async function prepareState(state: HistoryItemState) {
-    let key = state.key || Symbol()
+    let key = state.key
+
+    if (!key) {
+      return makeObjectSynchronous(replaceFunctionsWithResult(state))
+    }
 
     if (cache.has(key)) {
       return cache.get(key) as HistoryItemState
