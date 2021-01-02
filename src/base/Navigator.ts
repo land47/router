@@ -90,7 +90,7 @@ export class Navigator {
   }
 
   get location() {
-    return window.location
+    return { ...window.location, search: window.location.hash }
   }
 
   get history() {
@@ -117,10 +117,10 @@ export class Navigator {
     search: string | SerializedURLParams
   ): string | SerializedURLParams {
     if (typeof search === 'string') {
-      return Object.fromEntries(new URLSearchParams(search))
+      return Object.fromEntries(new URLSearchParams(search.replace('#', '?')))
     }
 
-    return '?' + new URLSearchParams(search)
+    return '#' + new URLSearchParams(search)
   }
 
   /**
