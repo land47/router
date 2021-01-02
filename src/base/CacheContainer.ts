@@ -6,15 +6,18 @@ export class CacheContainer<Key, Value> {
   }
 
   /**
-   * Если в контейнере есть ключ, возвращает значение по этому ключу.
-   * В обратном случае устанавливает значение по ключу, возвращая значение.
+   * Метод позволяет проверить есть ли в кэше
+   * элемент с переданным ключом.
    */
-  load = (key: Key, value: Value) => {
-    if (this.container.has(key)) {
-      return this.container.get(key)
-    }
+  has = (key: Key) => this.container.has(key)
 
-    this.container.set(key, value)
-    return value
-  }
+  /**
+   * Добавляет (или заменяет) значение по ключу в контейнер.
+   */
+  set = (key: Key, value: Value) => this.container.set(key, value)
+
+  /**
+   * Возвращает значение (или undefined) из контейнера по ключу.
+   */
+  get = (key: Key) => this.container.get(key)
 }
