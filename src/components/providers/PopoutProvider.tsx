@@ -1,60 +1,64 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useState } from 'react'
 import { PopoutContext } from '../../contexts'
 import { Popout, PopoutOptions } from '../../shared/types'
 import { useNavigator } from '../../hooks'
 
+let defaultOptions: PopoutOptions = {
+  handleBackButton: true,
+}
+
 export let PopoutProvider: FC = ({ children }) => {
-  let [currentPopout, setCurrentPopout] = useState<Popout>(null)
-  let [
-    currentPopoutOptions,
-    setCurrentPopoutOptions,
-  ] = useState<PopoutOptions | null>(null)
+  let [state, setState] = useState<{ popout: Popout }>({
+    popout: null,
+  })
   let navigator = useNavigator()
 
   /**
-   * Закрывает всплывающее окно.
-   */
-  let closePopout = useCallback(() => {
-    setCurrentPopout(null)
-    setCurrentPopoutOptions(null)
-  }, [])
-
-  /**
-   * Устанавливает текущее всплывающее окно и его настройки.
+   * Показывает всплывающее окно.
    */
   let setPopout = useCallback(
-    (popout: Popout, options: PopoutOptions = { handleBackButton: true }) => {
-      setCurrentPopoutOptions(options)
-      setCurrentPopout(popout)
+    (popout: Popout, options: PopoutOptions = defaultOptions) => {
+      setState({ popout })
+
+      if (options.handleBackButton) {
+        navigator.freezeLifecycle()
+        navigator
+          .push(
+            navigator.convertSearchParams(navigator.location.search),
+            options
+          )
+          .then(navigator.unfreezeLifecycle)
+
+        navigator.createPhantomTask(closePopout)
+      }
     },
     []
   )
 
   /**
-   * Обрабатывает сайд-эффекты.
+   * Закрывает текущее всплывающее окно.
    */
-  useEffect(() => {
-    // if close popout
-    if (currentPopout === null) {
-      if (currentPopoutOptions?.handleBackButton) {
+  let closePopout = useCallback(
+    (historyBack: boolean = navigator.history.state.handleBackButton) => {
+      setState({ popout: null })
+
+      if (historyBack) {
+        navigator.freezeLifecycle()
         navigator.back()
+        setTimeout(navigator.unfreezeLifecycle, 0)
       }
-
-      return
-    }
-
-    // if set popout
-    if (currentPopoutOptions?.handleBackButton) {
-      navigator.duplicateRecord()
-      navigator.createTask(closePopout)
-    }
-
-    return () => navigator.removeTask(closePopout)
-  }, [currentPopout, currentPopoutOptions])
+    },
+    []
+  )
 
   return (
     <PopoutContext.Provider
-      value={{ popout: currentPopout, setPopout, closePopout }}>
+      value={{
+        popout: state.popout,
+        setPopout,
+        // prettier-ignore
+        closePopout: () => closePopout(navigator.history.state.handleBackButton)
+      }}>
       {children}
     </PopoutContext.Provider>
   )
