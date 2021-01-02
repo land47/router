@@ -11,7 +11,7 @@ export function useStructure<S extends ApplicationStructure, T>(
   initial: S,
   options: HistoryItemState<T> = {}
 ) {
-  let search = useSearch(Object.keys(initial))
+  let search = useSearch(Object.keys(initial)) as S
   let navigator = useNavigator()
   let router = useRouter()
 
@@ -41,7 +41,7 @@ export function useStructure<S extends ApplicationStructure, T>(
     })
   }, [])
 
-  return useMemo(() => ({ modal: null, ...((search || initial) as S) }), [
+  return useMemo(() => ({ modal: null, ...(search || initial) }), [
     search,
     initial,
   ])
