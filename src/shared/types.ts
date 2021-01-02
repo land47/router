@@ -70,3 +70,18 @@ export type SnackbarControls = {
 export type LaunchParamsControls = {
   search: string
 }
+
+/**
+ * Всплывающие окна.
+ */
+export type Popout = ReactNode
+
+export type PopoutOptions = {
+  handleBackButton: boolean
+}
+
+export type PopoutControls = {
+  popout: Popout
+  setPopout(popout: Popout, options: PopoutOptions): void
+  closePopout(): void
+}

@@ -1,7 +1,11 @@
 import { useCallback } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
 import { useCache, useNavigator } from '../hooks'
-import { withoutValue, makeObjectSynchronous } from '../utils'
+import {
+  withoutValue,
+  makeObjectSynchronous,
+  replaceFunctionsWithResult,
+} from '../utils'
 
 /**
  * Значения, которые будут исключены (вместе с ключем)
@@ -16,14 +20,26 @@ export function useRouter() {
   let navigator = useNavigator()
   let cache = useCache()
 
+  /**
+   * Возвращает обработанное состояние. Кэширует, обрабатывает асинхронные
+   * значения параметров.
+   */
   async function prepareState(state: HistoryItemState) {
-    // prettier-ignore
-    let stateFromCache = cache.load(
-      state.key || Symbol(),
-      state
-    ) as HistoryItemState
+    let key = state.key
 
-    return makeObjectSynchronous(stateFromCache)
+    if (!key) {
+      return makeObjectSynchronous(replaceFunctionsWithResult(state))
+    }
+
+    if (cache.has(key)) {
+      return cache.get(key) as HistoryItemState
+    }
+
+    let prepared = replaceFunctionsWithResult(state)
+    let sync = makeObjectSynchronous(prepared)
+    cache.set(key, sync)
+
+    return sync
   }
 
   /**
@@ -42,12 +58,12 @@ export function useRouter() {
    *
    * Пример с передачей асинхронных параметров (fetchUser возвращает промис):
    * ```typescript
-   * router.push({ panel: 'profile' }, { user: fetchUser() })
+   * router.push({ panel: 'profile' }, { user: fetchUser })
    * ```
    *
    * Пример с кэшированием параметров:
    * ```typescript
-   * router.push({ panel: 'profile' }, { user: fetchUser(), 'unique_key' })
+   * router.push({ panel: 'profile' }, { user: fetchUser, key: 'unique_key' })
    * ```
    */
   let push = useCallback(

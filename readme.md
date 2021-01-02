@@ -12,6 +12,19 @@ npm i @unexp/router
 ```
 
 # Быстрый старт
+Сначала нужно обернуть приложение в компонент-провайдер ``Router``:
+```jsx
+import { Router } from '@unexp/router'
+
+ReactDOM.render(
+  <Router>
+    <App />
+  </Router>,
+  document.getElementById('root')
+)
+```
+Теперь мы можем пользоваться всеми возможностями пакета.
+Базовый пример:
 ```jsx
 import { useStructure } from '@unexp/router'
 
@@ -27,8 +40,6 @@ let App = () => {
     </View>
   )
 }
-
-ReactDOM.render(<App />, root)
 ```
 Выглядит довольно просто.
 
