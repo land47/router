@@ -41,10 +41,8 @@ export function useStructure<S extends ApplicationStructure, T>(
     })
   }, [])
 
-  let structure = useMemo(() => ({ modal: null, ...(search || initial) }), [
+  return useMemo(() => ({ modal: null, ...((search || initial) as S) }), [
     search,
     initial,
   ])
-
-  return structure as { modal: null | string } & S
 }
