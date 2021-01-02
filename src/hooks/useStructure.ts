@@ -19,20 +19,21 @@ export function useStructure<S extends ApplicationStructure, T>(
 
     // Фикс повторного первого рендера приложения
     navigator.freezeLifecycle()
-    router.replace(initial, options)
-    navigator.unfreezeLifecycle()
+    router.replace(initial, options).then(() => {
+      navigator.unfreezeLifecycle()
 
-    if (hash) {
-      let original = navigator.convertSearchParams(hash)
-      let params = { ...original }
+      if (hash) {
+        let original = navigator.convertSearchParams(hash)
+        let params = { ...original }
 
-      // Удаляем из параметров данные о структуре приложения
-      delete params.panel
-      delete params.view
-      delete params.story
+        // Удаляем из параметров данные о структуре приложения
+        delete params.panel
+        delete params.view
+        delete params.story
 
-      router.push(original, params)
-    }
+        router.push(original, params)
+      }
+    })
   }, [])
 
   let structure = useMemo(() => {
