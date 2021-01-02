@@ -21,15 +21,12 @@ export let PopoutProvider: FC = ({ children }) => {
       setState({ popout })
 
       if (options.handleBackButton) {
-        navigator.freezeLifecycle()
         navigator
           .push(
             navigator.convertSearchParams(navigator.location.search),
             options
           )
-          .then(navigator.unfreezeLifecycle)
-
-        navigator.createPhantomTask(closePopout)
+          .then(() => navigator.createPhantomTask(closePopout))
       }
     },
     []
@@ -43,9 +40,7 @@ export let PopoutProvider: FC = ({ children }) => {
       setState({ popout: null })
 
       if (historyBack) {
-        navigator.freezeLifecycle()
         navigator.back()
-        setTimeout(navigator.unfreezeLifecycle, 0)
       }
     },
     []
