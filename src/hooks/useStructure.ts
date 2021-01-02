@@ -23,7 +23,15 @@ export function useStructure<S extends ApplicationStructure, T>(
     navigator.unfreezeLifecycle()
 
     if (hash) {
-      router.push(navigator.convertSearchParams(hash))
+      let original = navigator.convertSearchParams(hash)
+      let params = { ...original }
+
+      // Удаляем из параметров данные о структуре приложения
+      delete params.panel
+      delete params.view
+      delete params.story
+
+      router.push(original, params)
     }
   }, [])
 
