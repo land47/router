@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
 import { useNavigator, useRouter, useSearch } from '../hooks'
+import { areObjectsEqual } from '../utils'
 
 /**
  * Устанавливает структуру приложения и обновляет значения
@@ -23,6 +24,10 @@ export function useStructure<S extends ApplicationStructure, T>(
       navigator.unfreezeLifecycle()
 
       if (hash) {
+        if (areObjectsEqual(navigator.convertSearchParams(hash), initial)) {
+          return
+        }
+
         let original = navigator.convertSearchParams(hash)
         let params = { ...original }
 
