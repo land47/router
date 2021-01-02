@@ -89,6 +89,19 @@ export class Navigator {
     if (index) this.tasks.splice(index, 1)
   }
 
+  /**
+   * Позволяет создать задачу, которая будет выполнена
+   * лишь один раз.
+   */
+  createPhantomTask = (task: VoidFunction) => {
+    let handler = () => {
+      task()
+      this.removeTask(handler)
+    }
+
+    this.createTask(handler)
+  }
+
   get location() {
     return { ...window.location, search: window.location.hash }
   }
@@ -142,15 +155,18 @@ export class Navigator {
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
-    if (
-      this.convertSearchParams(record) === this.location.search &&
-      areObjectsEqual(record, this.history.state)
-    ) {
-      return
-    }
+    return new Promise<void>(resolve => {
+      if (
+        this.convertSearchParams(record) === this.location.search &&
+        areObjectsEqual(record, this.history.state)
+      ) {
+        return resolve()
+      }
 
-    this.history.pushState(state, '', this.convertSearchParams(record))
-    this.dispatchEvent(state)
+      this.createPhantomTask(resolve)
+      this.history.pushState(state, '', this.convertSearchParams(record))
+      this.dispatchEvent(state)
+    })
   }
 
   /**
@@ -180,7 +196,11 @@ export class Navigator {
    * Возвращает на прошлую страницу в истории, или если такой нет,
    * закрывает приложение.
    */
-  back = this.history.back.bind(this.history)
+  back = () =>
+    new Promise<void>(resolve => {
+      this.createPhantomTask(resolve)
+      this.history.back()
+    })
 
   /**
    * Выполняет переход на определенную страницу в истории текущей сессии.
