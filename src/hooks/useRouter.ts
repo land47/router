@@ -18,7 +18,7 @@ let excludeValues = [null, undefined, 'null', 'undefined']
  */
 export function useRouter() {
   let navigator = useNavigator()
-  let cache = useCache()
+  let cache = useCache<unknown, HistoryItemState>()
 
   /**
    * Возвращает обработанное состояние. Кэширует, обрабатывает асинхронные
@@ -32,7 +32,7 @@ export function useRouter() {
     }
 
     if (cache.has(key)) {
-      return cache.get(key) as HistoryItemState
+      return cache.get(key)
     }
 
     let prepared = replaceFunctionsWithResult(state)
