@@ -25,26 +25,21 @@ export function useStructure<S extends ApplicationStructure, T>(
 
     // Фикс повторного первого рендера приложения
     navigator.freezeLifecycle()
-    router
-      .replace(initial, options)
-      .then(navigator.unfreezeLifecycle)
-      .then(() => {
-        // Если нет хеша, или начальная структура равна структуре,
-        // переданной хешем, пропускаем добавление записи.
-        if (
-          !hash ||
-          areObjectsEqual(navigator.convertSearchParams(hash), initial)
-        ) {
-          return
-        }
+    router.replace(initial, options).then(() => {
+      let serialized = navigator.convertSearchParams(hash)
+      navigator.unfreezeLifecycle()
 
-        let serialized = navigator.convertSearchParams(hash)
+      // Если нет хеша, или начальная структура равна структуре,
+      // переданной хешем, пропускаем добавление записи.
+      if (!hash || areObjectsEqual(serialized, initial)) {
+        return
+      }
 
-        // Не включаем данные о структуре в параметры.
-        // #panel=home&a=1&b=2 => { a: '1', b: '2' }
-        let params = (({ modal, story, view, panel, ...o }) => o)(serialized)
-        router.push(serialized, params)
-      })
+      // Не включаем данные о структуре в параметры.
+      // #panel=home&a=1&b=2 => { a: '1', b: '2' }
+      let params = (({ modal, story, view, panel, ...o }) => o)(serialized)
+      router.push(serialized, params)
+    })
   }, [])
 
   return { modal: null, popout: usePopout().popout, ...(search || initial) }
