@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useCache, useNavigator } from '../hooks'
+import { useCache, useNavigator } from './index'
 import {
   withoutValue,
   makeObjectSynchronous,

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useNavigator, usePopout, useRouter, useSearch } from '../hooks'
+import { useNavigator, usePopout, useRouter, useSearch } from './index'
 import { areObjectsEqual } from '../utils'
 
 type Structure<S extends ApplicationStructure> = S & {

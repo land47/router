@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SerializedURLParams } from '../shared/types'
-import { useNavigator } from '../hooks'
+import { useNavigator } from './index'
 
 /**
  * Подписывается на изменения URL-параметров, и если в них

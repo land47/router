@@ -1,4 +1,4 @@
-import { useNavigator } from '../hooks'
+import { useNavigator } from './index'
 
 /**
  * Возвращает состояние (параметры) текущей записи в истории.
