@@ -21,12 +21,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/profilemyprofile/router"
+    "url": "https://github.com/land47/router"
   },
   "bugs": {
-    "url": "https://github.com/profilemyprofile/router/issues"
+    "url": "https://github.com/land47/router/issues"
   },
-  "homepage": "https://github.com/profilemyprofile/router",
+  "homepage": "https://github.com/land47/router",
   "peerDependencies": {
     "@vkontakte/icons": "^1.69.0",
     "@vkontakte/vk-bridge": "^2.3.0",
