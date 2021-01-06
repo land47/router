@@ -9,5 +9,8 @@ export function useLaunchParams() {
     throw new Error(APP_MUST_BE_WRAPPED_IN_ROUTER)
   }
 
-  return context.search
+  return {
+    search: context.search,
+    serialized: Object.fromEntries(new URLSearchParams(context.search)),
+  }
 }
