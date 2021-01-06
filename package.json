@@ -1,6 +1,6 @@
 {
   "name": "@unexp/router",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A very simple router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "main": "dist/index.js",
