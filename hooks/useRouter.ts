@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useCache, useNavigator } from './index'
+import { useCache, useNavigator } from '.'
 import {
   withoutValue,
   makeObjectSynchronous,
@@ -28,14 +28,16 @@ export function useRouter() {
   }
 
   /**
-  * Обрабатывает состояние записи.
-  */
+   * Обрабатывает состояние записи.
+   */
   async function prepareState(state: HistoryItemState) {
     if (cache.has(state.key)) {
       return cache.get(state.key)
     }
 
-    let prepared = await makeObjectSynchronous(replaceFunctionsWithResult(state))
+    let prepared = await makeObjectSynchronous(
+      replaceFunctionsWithResult(state)
+    )
 
     if (state.key) {
       cacheState(prepared)
@@ -83,7 +85,10 @@ export function useRouter() {
    */
   let push = useCallback(
     async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
-      return navigator.push(prepareStructure(structure), await prepareState(state))
+      return navigator.push(
+        prepareStructure(structure),
+        await prepareState(state)
+      )
     },
     []
   )
@@ -94,7 +99,10 @@ export function useRouter() {
 
   let replace = useCallback(
     async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
-      return navigator.replace(prepareStructure(structure), await prepareState(state))
+      return navigator.replace(
+        prepareStructure(structure),
+        await prepareState(state)
+      )
     },
     []
   )
