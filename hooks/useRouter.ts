@@ -21,25 +21,40 @@ export function useRouter() {
   let cache = useCache<unknown, HistoryItemState>()
 
   /**
-   * Возвращает обработанное состояние. Кэширует, обрабатывает асинхронные
-   * значения параметров.
+   * Кэширует состояние.
    */
+  function cacheState(state: HistoryItemState) {
+    cache.set(state.key, state)
+  }
+
+  /**
+  * Обрабатывает состояние записи.
+  */
   async function prepareState(state: HistoryItemState) {
-    let key = state.key
-
-    if (!key) {
-      return makeObjectSynchronous(replaceFunctionsWithResult(state))
+    if (cache.has(state.key)) {
+      return cache.get(state.key)
     }
 
-    if (cache.has(key)) {
-      return cache.get(key)
+    let prepared = await makeObjectSynchronous(replaceFunctionsWithResult(state))
+
+    if (state.key) {
+      cacheState(prepared)
     }
 
-    let prepared = replaceFunctionsWithResult(state)
-    let sync = makeObjectSynchronous(prepared)
-    cache.set(key, sync)
+    return prepared
+  }
 
-    return sync
+  /**
+   * Обрабатывает структуру перед добавлением в историю браузера.
+   */
+  function prepareStructure(structure: ApplicationStructure) {
+    return withoutValue(
+      {
+        ...navigator.convertSearchParams(navigator.location.search),
+        ...structure,
+      },
+      ...excludeValues
+    )
   }
 
   /**
@@ -68,30 +83,18 @@ export function useRouter() {
    */
   let push = useCallback(
     async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
-      navigator.push(
-        withoutValue(
-          {
-            ...navigator.convertSearchParams(navigator.location.search),
-            ...structure,
-          },
-          ...excludeValues
-        ),
-        await prepareState(state)
-      )
+      return navigator.push(prepareStructure(structure), await prepareState(state))
     },
-    [navigator.location.search]
+    []
   )
 
   let back = useCallback(() => {
-    navigator.back()
+    return navigator.back()
   }, [])
 
   let replace = useCallback(
     async (structure: ApplicationStructure, state: HistoryItemState = {}) => {
-      navigator.replace(
-        withoutValue(structure, ...excludeValues),
-        await prepareState(state)
-      )
+      return navigator.replace(prepareStructure(structure), await prepareState(state))
     },
     []
   )
