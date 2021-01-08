@@ -1,10 +1,13 @@
 export class CacheContainer<Key, Value> {
   /**
    * Контейнер, в котором хранится кэшированные данные.
-   * Во избежание утечки памяти хранит только последние 8 элементов.
    */
-  private container: Map<Key, Value>
-  private MAX_SIZE: number = 8
+  private readonly container: Map<Key, Value>
+
+  /**
+   * Максимальное количество элементов, одновременно хранящихся в контейнере.
+   */
+  static MAX_SIZE: number = 8
 
   constructor(...initialValue: [Key, Value][]) {
     this.container = new Map(initialValue)
@@ -20,10 +23,8 @@ export class CacheContainer<Key, Value> {
    * Добавляет (или заменяет) значение по ключу в контейнер.
    */
   set = (key: Key, value: Value) => {
-    if (this.container.size === this.MAX_SIZE) {
-      let container = [...this.container]
-      container.shift()
-      this.container = new Map(container)
+    if (this.container.size === CacheContainer.MAX_SIZE) {
+      this.container.delete(this.container.keys().next().value)
     }
 
     this.container.set(key, value)
