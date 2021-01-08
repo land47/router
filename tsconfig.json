@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "commonjs",
+    "module": "ES6",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react",
     "declaration": true,
