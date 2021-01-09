@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import {
-  LaunchParamsProvider,
   NavigatorProvider,
   SnackbarProvider,
   CacheContainerProvider,
@@ -13,13 +12,11 @@ import {
 export let Router: FC = ({ children }) => {
   return (
     <CacheContainerProvider>
-      <LaunchParamsProvider>
-        <NavigatorProvider>
-          <SnackbarProvider>
-            <PopoutProvider>{children}</PopoutProvider>
-          </SnackbarProvider>
-        </NavigatorProvider>
-      </LaunchParamsProvider>
+      <NavigatorProvider>
+        <SnackbarProvider>
+          <PopoutProvider>{children}</PopoutProvider>
+        </SnackbarProvider>
+      </NavigatorProvider>
     </CacheContainerProvider>
   )
 }
