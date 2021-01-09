@@ -8,7 +8,7 @@
     "sourceMap": false,
     "outDir": "dist",
     "rootDir": ".",
-    "removeComments": false,
+    "removeComments": true,
     "strict": true,
     "strictNullChecks": true,
     "alwaysStrict": true,
@@ -24,5 +24,6 @@
     "isolatedModules": true,
     "noImplicitAny": true,
     "suppressExcessPropertyErrors": true
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

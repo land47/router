@@ -1,1 +1,0 @@
-export { EventCatcher } from './EventCatcher'
