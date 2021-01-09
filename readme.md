@@ -1,5 +1,5 @@
 ## Роутер
-Быстрый, легковесный (2kB) и продвинутый роутер для приложений, написанных на основе
+Продвинутый и легковесный (2.7kB) роутер для приложений, написанных на основе
 [VKUI](https://github.com/VKCOM/VKUI).
 
 ## Примеры приложений
@@ -15,6 +15,7 @@
 ```jsx
 import {render} from 'react-dom'
 import {Router} from '@unexp/router'
+import App from './App'
 
 render(
   <Router>
@@ -33,7 +34,7 @@ render(
 import {useStructure} from '@unexp/router'
 
 export function App() {
-  let {view, panel} = useStructure({ view: 'home', panel: 'main' })
+  let {view, panel} = useStructure({view: 'home', panel: 'main'})
 
   return (
     <Root activeView={view}>
@@ -53,17 +54,27 @@ export function App() {
 Для перехода на другое состояние навигации необходимо использовать хук `useRouter`. 
 #### push
 Метод `push` позволяет добавлять новое состояние навигации в историю.
+Первым аргументом он принимает объект подобного вида:
+
+| Свойство      | Тип                  |
+| ------------- | -------------------- |
+| panel         | string, необязателен |
+| view          | string, необязателен |
+| story         | string, необязателен |
+
+Вторым аргументом (передавать его необязательно) метод `push` принимает [объект параметров](#passing-params).
+
 ```jsx
 import {useRouter} from '@unexp/router'
 
 export let Main = memo(function Main({ id }) {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   return (
     <Panel id={id}>
       <PanelHeader>Роутер</PanelHeader>
 
-      <SimpleCell onClick={() => push({ panel: 'settings' })}>
+      <SimpleCell onClick={() => push({panel: 'settings'})}>
         Перейти к настройкам
       </SimpleCell>
     </Panel>
@@ -76,7 +87,7 @@ export let Main = memo(function Main({ id }) {
 import {useRouter} from '@unexp/router'
 
 export let Settings = memo(function Settings({ id }) {
-  let { back } = useRouter()  
+  let {back} = useRouter()  
 
   return (
     <Panel id={id}>
@@ -94,11 +105,11 @@ export let Settings = memo(function Settings({ id }) {
 import {useRouter} from '@unexp/router'
 
 export let Onboarding = memo(function Onboarding({ id }) {
-  let { replace } = useRouter()  
+  let {replace} = useRouter()  
 
   return (
     <Panel id={id}>
-      <SimpleCell onClick={() => replace({ panel: 'home' })}>
+      <SimpleCell onClick={() => replace({panel: 'home'})}>
         Завершить обучение
       </SimpleCell>
     </Panel>
@@ -112,7 +123,7 @@ export let Onboarding = memo(function Onboarding({ id }) {
 import {useRouter} from '@unexp/router'
 
 export let About = memo(function About({ id }) {
-  let { go } = useRouter()  
+  let {go} = useRouter()  
 
   return (
     <Panel id={id}>
@@ -136,7 +147,7 @@ export let About = memo(function About({ id }) {
 import {useSnackbar} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
-  let { setSnackbar, closeSnackbar } = useSnackbar()  
+  let {setSnackbar, closeSnackbar} = useSnackbar()  
 
   function showError() {
     setSnackbar(
@@ -162,7 +173,7 @@ export let Home = memo(function Home({ id }) {
 ## Управление всплывающими окнами
 ...
 
-## Передача параметров
+<h2 id="passing-params">Передача параметров</h2>
 Иногда требуется передать какие-либо данные о новом состоянии навигации. Например, мы хотим реализовать панель
 `Product`. Чтобы не делать панель `Product1`, `Product2` и т.д, мы можем передавать параметры о нужном продукте, а
 единственная панель `Product` будет их обрабатывать.
@@ -173,14 +184,14 @@ export let Home = memo(function Home({ id }) {
 import {useRouter} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   return (
     <Panel id={id}>
-      <SimpleCell onClick={() => push({ panel: 'product' }, { productId: 1 })}>
+      <SimpleCell onClick={() => push({panel: 'product'}, {productId: 1})}>
         Перейти к продукту #1
       </SimpleCell>
-      <SimpleCell onClick={() => push({ panel: 'product' }, { productId: 132 })}>
+      <SimpleCell onClick={() => push({panel: 'product'}, {productId: 132})}>
         Перейти к продукту #132
       </SimpleCell>
     </Panel>
@@ -193,7 +204,7 @@ export let Home = memo(function Home({ id }) {
 import {useParams} from '@unexp/router'
 
 export let Product = memo(function Product({id}) {
-  let { productId } = useParams() 
+  let {productId} = useParams() 
 
   return (
     <Panel id={id}>
@@ -204,14 +215,12 @@ export let Product = memo(function Product({id}) {
 ```
 
 ## Передача асинхронных параметров
-Есть несколько способов передать асинхронные параметры. Рассмотрим несколько их них.
-
-Первый способ, который стоит избегать:
+Есть несколько способов передать асинхронные параметры. Рассмотрим единственно верный:
 ```jsx
 import {useRouter} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   async function fetchUser() {
     // Функция возвращает промис
@@ -220,34 +229,7 @@ export let Home = memo(function Home({ id }) {
   return (
     <Panel id={id}>
       <SimpleCell
-        onClick={() => 
-          fetchUser().then(user => push({ panel: 'profile' }, { user }))
-        }
-      >
-        Перейти в профиль
-      </SimpleCell>
-    </Panel>
-  )
-})
-```
-
-Второй способ, которым стоит пользоваться:
-```jsx
-import {useRouter} from '@unexp/router'
-
-export let Home = memo(function Home({ id }) {
-  let { push } = useRouter()  
-
-  async function fetchUser() {
-    // Функция возвращает промис
-  }
-
-  return (
-    <Panel id={id}>
-      <SimpleCell
-        onClick={() => 
-          push({ panel: 'profile' }, { user: fetchUser })
-        }
+        onClick={() => push({panel: 'profile'}, { user: fetchUser })}
       >
         Перейти в профиль
       </SimpleCell>
@@ -258,9 +240,39 @@ export let Home = memo(function Home({ id }) {
 **Очень важно:** стоит обратить внимание на то, что в этом случае функция не вызывается. Мы передаём ссылку на неё, а
 не результат вызова.
 
+
+
 ## Кэширование параметров
-Очень важная и интересная фича роутера – кэширование параметров. Эта фича отлично сочетается с асинхронными
-параметрами. 
+Крутая и интересная фича моего роутера – кэширование параметров. Она отлично сочетается с асинхронными
+параметрами. Модифицируем пример, предоставленный выше:
+```jsx
+import {useRouter} from '@unexp/router'
+
+export let Home = memo(function Home({ id }) {
+  let {push} = useRouter()  
+
+  async function fetchUser() {
+    // Функция возвращает промис
+  }
+
+  return (
+    <Panel id={id}>
+      <SimpleCell
+        onClick={() => push({panel: 'profile'}, { user: fetchUser, key: 'myKey' })} // <--
+      >
+        Перейти в профиль
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+Мы добавили уникальный ключ параметрам (свойство `key`). Таким образом после первого вызова функции `fetchUser` её
+значение будет закешировано. Это означает, что при каждом следующем переходе на панель `profile` с ключом `myKey` 
+пользователю не придётся ждать повторного выполнения функции `fetchUser`.
+
+Кейс применения:
+
+
 
 ## Работа с хэшем
 Хук `useStructure` внутри себя обрабатывает хеш, переданный в ссылке на ваше приложение.
