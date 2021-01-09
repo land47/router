@@ -82,6 +82,9 @@ export let Main = memo(function Main({ id }) {
   )
 })
 ```
+
+![](https://i.ibb.co/yf7F2VT/push.gif)
+
 #### back
 Метод `back` позволяет перейти на прошлое состояние навигации.
 ```jsx
@@ -95,28 +98,35 @@ export let Settings = memo(function Settings({ id }) {
       <PanelHeader left={<PanelHeaderBack onClick={back} />}>
         Настройки
       </PanelHeader>
-      ...
     </Panel>
   )
 })
 ```
+
+![](https://i.ibb.co/0J62Lkm/back.gif)
+
 #### replace
 В отличии метода `push`, метод `replace` заменяет текущее состояние навигации.
 ```jsx
 import {useRouter} from '@unexp/router'
 
-export let Onboarding = memo(function Onboarding({ id }) {
-  let {replace} = useRouter()  
+export let Settings = memo(function Settings({ id }) {
+  let { replace } = useRouter()
 
   return (
     <Panel id={id}>
-      <SimpleCell onClick={() => replace({panel: 'home'})}>
-        Завершить обучение
+      <PanelHeader>Настройки</PanelHeader>
+
+      <SimpleCell onClick={() => replace({ panel: 'about' })}>
+        Заменить текущую панель на панель «about»
       </SimpleCell>
     </Panel>
   )
 })
 ```
+
+![](https://i.ibb.co/dr19jbL/replace.gif)
+
 #### go
 Метод `go` позволяет выполнить переход на определенное состояние навигации в истории. С его помощью можно перемещаться как
 вперед, так и назад, в зависимости от значения переданного параметра.
@@ -152,14 +162,14 @@ export let Home = memo(function Home({ id }) {
 
   function showError() {
     setSnackbar(
-      <Snackbar onClose={closeSnackbar}>
-        Произошла ошибка
-      </Snackbar>
+      <Snackbar onClose={closeSnackbar}>Произошла ошибка</Snackbar>
     )
   }
 
   return (
     <Panel id={id}>
+      <PanelHeader>Снэкбары</PanelHeader>
+
       <SimpleCell onClick={showError}>
         Показать сообщение об ошибке
       </SimpleCell>
@@ -167,6 +177,8 @@ export let Home = memo(function Home({ id }) {
   )
 })
 ```
+
+![](https://i.ibb.co/T8MNvKk/snackbars-2.gif)
 
 ## Управление модальными окнами
 ...
@@ -214,6 +226,8 @@ export let Product = memo(function Product({id}) {
   )
 })
 ```
+
+![](https://i.ibb.co/N9dSDJQ/products.gif)
 
 ## Передача асинхронных параметров
 Есть несколько способов передать асинхронные параметры. Рассмотрим единственно верный:
