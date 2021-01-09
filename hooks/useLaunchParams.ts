@@ -1,16 +1,19 @@
-import { useContext } from 'react'
-import { LaunchParamsContext } from '../contexts'
-import { APP_MUST_BE_WRAPPED_IN_ROUTER } from '../shared/errors'
+import { useMemo } from 'react'
 
+/**
+ * Возвращает параметры запуска в виде объекта.
+ *
+ * ```typescript
+ * let launchParams = useLaunchParams() // { any: value, ... }
+ * let str = launchParams + '' // ?any=value&...
+ * ```
+ */
 export function useLaunchParams() {
-  let context = useContext(LaunchParamsContext)
-
-  if (context === null) {
-    throw new Error(APP_MUST_BE_WRAPPED_IN_ROUTER)
-  }
+  // prettier-ignore
+  let serialized = useMemo(() => Object.fromEntries(new URLSearchParams(window.location.search)), [])
 
   return {
-    search: context.search,
-    serialized: Object.fromEntries(new URLSearchParams(context.search)),
+    ...serialized,
+    [Symbol.toPrimitive]: () => window.location.search,
   }
 }
