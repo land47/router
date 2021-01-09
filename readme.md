@@ -12,7 +12,7 @@
 
 ## После установки
 Приложение необходимо обернуть в компонент-провайдер `Router`:
-```tsx
+```jsx
 import {render} from 'react-dom'
 import {Router} from '@unexp/router'
 
@@ -29,7 +29,7 @@ render(
 `useStructure`. Этот хук возвращает текущее состояние навигации и обновляет его при изменении.
 
 Пример:
-```tsx
+```jsx
 import {useStructure} from '@unexp/router'
 
 export function App() {
@@ -53,7 +53,7 @@ export function App() {
 Для перехода на другое состояние навигации необходимо использовать хук `useRouter`. 
 #### push
 Метод `push` позволяет добавлять новое состояние навигации в историю.
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Main = memo(function Main({ id }) {
@@ -72,7 +72,7 @@ export let Main = memo(function Main({ id }) {
 ```
 #### back
 Метод `back` позволяет перейти на прошлое состояние навигации.
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Settings = memo(function Settings({ id }) {
@@ -90,7 +90,7 @@ export let Settings = memo(function Settings({ id }) {
 ```
 #### replace
 В отличии метода `push`, метод `replace` заменяет текущее состояние навигации.
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Onboarding = memo(function Onboarding({ id }) {
@@ -108,7 +108,7 @@ export let Onboarding = memo(function Onboarding({ id }) {
 #### go
 Метод `go` позволяет выполнить переход на определенное состояние навигации в истории. С его помощью можно перемещаться как
 вперед, так и назад, в зависимости от значения переданного параметра.
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let About = memo(function About({ id }) {
@@ -132,7 +132,7 @@ export let About = memo(function About({ id }) {
 Для показа коротких сообщений в нижней части экрана (снэкбаров) реализован хук `useSnackbar`.
 
 **Немного подробностей:** при переходе на новое состояние навигации снэкбар закрывается.
-```tsx
+```jsx
 import {useSnackbar} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
@@ -169,7 +169,7 @@ export let Home = memo(function Home({ id }) {
 
 Чтобы передать параметры, методы `push` и `replace`, полученные с помощью хука `useRouter`, принимают объект вторым
 аргументом.
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
@@ -189,7 +189,7 @@ export let Home = memo(function Home({ id }) {
 ```
 
 И наконец, чтобы получить параметры о текущей записи, мы можем использовать хук `useParams`.
-```tsx
+```jsx
 import {useParams} from '@unexp/router'
 
 export let Product = memo(function Product({id}) {
@@ -207,7 +207,7 @@ export let Product = memo(function Product({id}) {
 Есть несколько способов передать асинхронные параметры. Рассмотрим несколько их них.
 
 Первый способ, который стоит избегать:
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
@@ -232,7 +232,7 @@ export let Home = memo(function Home({ id }) {
 ```
 
 Второй способ, которым стоит пользоваться:
-```tsx
+```jsx
 import {useRouter} from '@unexp/router'
 
 export let Home = memo(function Home({ id }) {
