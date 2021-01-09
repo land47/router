@@ -1,6 +1,6 @@
 {
   "name": "@unexp/router",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A very simple router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "main": "dist/index.js",
@@ -17,7 +17,9 @@
     "navigator"
   ],
   "scripts": {
-    "prepare": "install-peers"
+    "prepare": "install-peers",
+    "cleaning": "del /S dist\\utils\\*.d.ts dist\\base\\*.d.ts dist\\contexts\\*.d.ts dist\\base\\**.d.ts dist\\shared\\*.d.ts dist\\components\\providers\\*.d.ts",
+    "prepublish": "tsc & yarn cleaning"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,5 @@
     "install-peers-cli": "^2.2.0",
     "tslint": "^6.1.3",
     "typescript": "^4.1.3"
-  },
-  "dependencies": {}
+  }
 }
