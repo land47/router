@@ -1,114 +1,272 @@
-# Описание пакета
-Очень простой и удобный роутер для приложений, использующих в качестве
-UI-библиотеки [VKUI](https://github.com/VKCOM/VKUI).
+## Роутер
+Быстрый, легковесный (2kB) и продвинутый роутер для приложений, использующих [VKUI](https://github.com/VKCOM/VKUI)
+библиотеку.
 
-# Установка
-```
-yarn add @unexp/router
-```
-или, используя npm:
-```
-npm i @unexp/router
-```
+## Примеры приложений
+...
 
-# Быстрый старт
-Сначала нужно обернуть приложение в компонент-провайдер ``Router``:
-```jsx
-import { Router } from '@unexp/router'
+## Установка
+`npm i @unexp/router` или `yarn add @unexp/router`
 
-ReactDOM.render(
+**Важно:** после установки пакета необходимо установить нужные ему [`peerDependencies`](https://github.com/land47/router/blob/master/package.json#L32).
+
+## После установки
+Приложение необходимо обернуть в компонент-провайдер `Router`:
+```tsx
+import {render} from 'react-dom'
+import {Router} from '@unexp/router'
+
+render(
   <Router>
     <App />
   </Router>,
   document.getElementById('root')
 )
 ```
-Теперь мы можем пользоваться всеми возможностями пакета.
-Базовый пример:
-```jsx
-import { useStructure } from '@unexp/router'
 
-let App = () => {
-  let structure = useStructure({
-    panel: 'home'
-  })
+## Структура приложения
+У каждого приложения, использующего `VKUI` имееется своя структура. Для её определения пакет предоставляет хук
+`useStructure`. Этот хук возвращает текущее состояние навигации и обновляет его при изменении.
+
+Пример:
+```tsx
+import {useStructure} from '@unexp/router'
+
+export function App() {
+  let {view, panel} = useStructure({ view: 'home', panel: 'main' })
 
   return (
-    <View activePanel={structure.panel}>
-      <Home id='home' />
-      <Settings id='settings' />
-    </View>
+    <Root activeView={view}>
+      <View id='home' activePanel={panel}>
+        <HomeMain id='main' />
+      </View>
+
+      <View id='settings' activePanel={panel}>
+        <SettingsMain id='main' />
+      </View>
+    </Root>
   )
 }
 ```
-Выглядит довольно просто.
 
-# Структура приложения
-В примере выше мы познакомились с хуком ``useStructure``. Вот что нужно про него знать:
-- С помощью него определяется структура приложения. 
-- Структура приложения может быть определена **лишь один раз**.
+## Управление навигацией
+Для перехода на другое состояние навигации необходимо использовать хук `useRouter`. 
+#### push
+Метод `push` позволяет добавлять новое состояние навигации в историю.
+```tsx
+import {useRouter} from '@unexp/router'
 
-# Навигация
-
-### Переход на новое состояние
-```jsx
-import { useRouter } from '@unexp/router'
-
-let Home = () => {
-  let { push } = useRouter()
+export let Main = memo(function Main({ id }) {
+  let { push } = useRouter()  
 
   return (
-    <Panel id='home'>
-      <PanelHeader>ВКонтакте</PanelHeader>
-      <Button onClick={() => push({ panel: 'settings' })}>
+    <Panel id={id}>
+      <PanelHeader>Роутер</PanelHeader>
+
+      <SimpleCell onClick={() => push({ panel: 'settings' })}>
         Перейти к настройкам
-      </Button>
+      </SimpleCell>
     </Panel>
   )
-}
+})
 ```
-С помощью метода ``push`` хука ``useRouter`` вы можете добавлять новое состояние
-навигации в историю. В примере выше при нажатии на кнопку пользователь перейдёт на
-панель с настройками.
+#### back
+Метод `back` позволяет перейти на прошлое состояние навигации.
+```tsx
+import {useRouter} from '@unexp/router'
 
-### Возврат назад
-```jsx
-import { useRouter } from '@unexp/router'
-
-let Settings = () => {
-  let { back } = useRouter()
+export let Settings = memo(function Settings({ id }) {
+  let { back } = useRouter()  
 
   return (
-    <Panel id='settings'>
+    <Panel id={id}>
       <PanelHeader left={<PanelHeaderBack onClick={back} />}>
         Настройки
       </PanelHeader>
+      ...
     </Panel>
   )
-}
+})
 ```
-При вызове метода ``back`` происходит возврат на прошлое состояние навигации.
+#### replace
+В отличии метода `push`, метод `replace` заменяет текущее состояние навигации.
+```tsx
+import {useRouter} from '@unexp/router'
 
-### Замена текущего состояния
-Иногда может потребоваться **заменить** текущее состояние навигации на другое. 
-Специально для этого ``useRouter`` предоставляет метод ``replace``. 
-```jsx
-import { useRouter } from '@unexp/router'
-
-let Home = () => {
-  let { replace } = useRouter()
+export let Onboarding = memo(function Onboarding({ id }) {
+  let { replace } = useRouter()  
 
   return (
-    <Panel id='home'>
-      <PanelHeader>ВКонтакте</PanelHeader>
-      <Button onClick={() => replace({ panel: 'settings' })}>
-        Заменить текущую панель на панель с настройками
-      </Button>
+    <Panel id={id}>
+      <SimpleCell onClick={() => replace({ panel: 'home' })}>
+        Завершить обучение
+      </SimpleCell>
     </Panel>
   )
-}
+})
 ```
-API этого метода полностью повторяет API метода ``push``.
+#### go
+Метод `go` позволяет выполнить переход на определенное состояние навигации в истории. С его помощью можно перемещаться как
+вперед, так и назад, в зависимости от значения переданного параметра.
+```tsx
+import {useRouter} from '@unexp/router'
 
-# Модальные окна
+export let About = memo(function About({ id }) {
+  let { go } = useRouter()  
+
+  return (
+    <Panel id={id}>
+      <SimpleCell onClick={() => go(2)}>
+        Перейти вперёд на 2 записи
+      </SimpleCell>
+  
+      <SimpleCell onClick={() => go(-1)}>
+        Перейти назад
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+
+## Управление снэкбарами
+Для показа коротких сообщений в нижней части экрана (снэкбаров) реализован хук `useSnackbar`.
+
+**Немного подробностей:** при переходе на новое состояние навигации снэкбар закрывается.
+```tsx
+import {useSnackbar} from '@unexp/router'
+
+export let Home = memo(function Home({ id }) {
+  let { setSnackbar, closeSnackbar } = useSnackbar()  
+
+  function showError() {
+    setSnackbar(
+      <Snackbar onClose={closeSnackbar}>
+        Произошла ошибка
+      </Snackbar>
+    )
+  }
+
+  return (
+    <Panel id={id}>
+      <SimpleCell onClick={showError}>
+        Показать сообщение об ошибке
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+
+## Управление модальными окнами
 ...
+
+## Управление всплывающими окнами
+...
+
+## Передача параметров
+Иногда требуется передать какие-либо данные о новом состоянии навигации. Например, мы хотим реализовать панель
+`Product`. Чтобы не делать панель `Product1`, `Product2` и т.д, мы можем передавать параметры о нужном продукте, а
+единственная панель `Product` будет их обрабатывать.
+
+Чтобы передать параметры, методы `push` и `replace`, полученные с помощью хука `useRouter`, принимают объект вторым
+аргументом.
+```tsx
+import {useRouter} from '@unexp/router'
+
+export let Home = memo(function Home({ id }) {
+  let { push } = useRouter()  
+
+  return (
+    <Panel id={id}>
+      <SimpleCell onClick={() => push({ panel: 'product' }, { productId: 1 })}>
+        Перейти к продукту #1
+      </SimpleCell>
+      <SimpleCell onClick={() => push({ panel: 'product' }, { productId: 132 })}>
+        Перейти к продукту #132
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+
+И наконец, чтобы получить параметры о текущей записи, мы можем использовать хук `useParams`.
+```tsx
+import {useParams} from '@unexp/router'
+
+export let Product = memo(function Product({id}) {
+  let { productId } = useParams() 
+
+  return (
+    <Panel id={id}>
+      <PanelHeader>Продукт #{productId}</PanelHeader>
+    </Panel>
+  )
+})
+```
+
+## Передача асинхронных параметров
+Есть несколько способов передать асинхронные параметры. Рассмотрим несколько их них.
+
+Первый способ, который стоит избегать:
+```tsx
+import {useRouter} from '@unexp/router'
+
+export let Home = memo(function Home({ id }) {
+  let { push } = useRouter()  
+
+  async function fetchUser() {
+    // Функция возвращает промис
+  }
+
+  return (
+    <Panel id={id}>
+      <SimpleCell
+        onClick={() => 
+          fetchUser().then(user => push({ panel: 'profile' }, { user }))
+        }
+      >
+        Перейти в профиль
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+
+Второй способ, которым стоит пользоваться:
+```tsx
+import {useRouter} from '@unexp/router'
+
+export let Home = memo(function Home({ id }) {
+  let { push } = useRouter()  
+
+  async function fetchUser() {
+    // Функция возвращает промис
+  }
+
+  return (
+    <Panel id={id}>
+      <SimpleCell
+        onClick={() => 
+          push({ panel: 'profile' }, { user: fetchUser })
+        }
+      >
+        Перейти в профиль
+      </SimpleCell>
+    </Panel>
+  )
+})
+```
+**Очень важно:** стоит обратить внимание на то, что в этом случае функция не вызывается. Мы передаём ссылку на неё, а
+не результат вызова.
+
+## Кэширование параметров
+Очень важная и интересная фича роутера – кэширование параметров. Эта фича отлично сочетается с асинхронными
+параметрами. 
+
+## Работа с хэшем
+Хук `useStructure` внутри себя обрабатывает хеш, переданный в ссылке на ваше приложение.
+
+- vk.com/app123#panel=home
+- vk.com/app123#view=home&panel=main
+- vk.com/app123#story=story_id&view=view_id&panel=panel_id
+
+Все эти ссылки будут корректно обработаны роутером.
