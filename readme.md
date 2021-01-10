@@ -212,7 +212,63 @@ let App = () => {
 ![](https://i.ibb.co/wrxQrgQ/modals-2.gif)
 
 ## Управление всплывающими окнами
-Отличие 
+Для обработки [всплывающих окон](https://vkcom.github.io/VKUI/#section-popouts) реализован хук
+`usePopout`.
+
+Возвращаемый им объект:
+| Метод         | Описание                      | Аргументы                           |
+| ------------- | ----------------------------- | ----------------------------------- |
+| setPopout     | Устаналивает всплывающее окно | popout: ReactNode, options: Options |
+| closePopout   | Закрывает всплывающее окно    | нет                                 |
+
+Описание объекта Options:
+| Свойство             | Описание                                               |
+| -------------------- | ------------------------------------------------------ |
+| handleBackButton     | Нужно ли закрывать всплывающее окно при переходе назад |
+
+Пример обработки всплывающих окон:
+```jsx
+let App = () => {
+  let { popout } = useStructure({ panel: 'main' })
+  let { setPopout, closePopout } = usePopout()
+
+  return (
+    <View popout={popout} activePanel='main'>
+      <Panel id='main'>
+        <PanelHeader>Роутер</PanelHeader>
+        <SimpleCell
+          onClick={() => {
+            setPopout(<ScreenSpinner />, { handleBackButton: false })
+            setTimeout(closePopout, 1000)
+          }}>
+          Показать спиннер
+        </SimpleCell>
+
+        <SimpleCell
+          onClick={() =>
+            setPopout(
+              <Alert
+                actions={[
+                  {title: 'Лишить права', mode: 'destructive', autoclose: true},
+                  {title: 'Отмена', autoclose: true, mode: 'cancel'},
+                ]}
+                actionsLayout='vertical'
+                onClose={closePopout}
+                header='Подтвердите действие'
+                text='Вы уверены, что хотите лишить пользователя права на модерацию контента?'
+              />
+            )
+          }>
+          Показать уведомление
+        </SimpleCell>
+      </Panel>
+    </View>
+  )
+}
+```
+
+![](https://i.ibb.co/M2SV2rH/spinner.gif) ![](https://i.ibb.co/mhc20Gh/alert.gif)
+
 
 <h2 id="passing-params">Передача параметров</h2>
 
