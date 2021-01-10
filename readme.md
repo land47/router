@@ -14,6 +14,7 @@
 - <a href='#передача-асинхронных-параметров'>Передача асинхронных параметров</a>
 - <a href='#кэширование-параметров'>Кэширование параметров</a>
 - <a href='#работа-с-хэшем'>Работа с хэшем</a>
+- <a href='#доступ-к-навигатору'>Доступ к навигатору</a>
 
 ## Примеры приложений
 ...
@@ -411,10 +412,43 @@ export function Home() {
 
 
 ## Работа с хэшем
-Хук `useStructure` внутри себя обрабатывает хеш, переданный в ссылке на ваше приложение.
+Роутер уже умеет обрабатывать хеш, переданный в ссылке на ваше приложение.
 
 - vk.com/app123#panel=home
 - vk.com/app123#view=home&panel=main
 - vk.com/app123#story=story_id&view=view_id&panel=panel_id
 
-Все эти ссылки будут корректно обработаны роутером.
+Все три примера будут корректно обработаны.
+
+![](https://i.ibb.co/W59pZZC/hash.gif)
+
+## Доступ к навигатору
+Обычно вам не потребуется получать доступ до навигатора, но пакет предоставляет такую
+возможность.
+
+Получение навигатора:
+```jsx
+// ...imports
+import { useNavigator } from '@unexp/router'
+
+export function App() {
+  let navigator = useNavigator()
+
+  useEffect(() => {
+    navigator.createListener(['panel'], ({ panel }) => 
+      console.log(`Переход на панель ${panel}`)
+    )
+  }, [])
+
+  return (
+    <View>...</View>
+  )
+}
+```
+
+<a href='https://github.com/land47/router/blob/master/base/Navigator.ts'>
+API навигатора можно посмотреть здесь.
+</a>
+
+## Лицензия
+<a href='https://choosealicense.com/licenses/mit/'>MIT</a>
