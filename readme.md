@@ -68,9 +68,9 @@ export function App() {
 Описание принимаемого объекта: 
 | Свойство      | Тип                  | Описание            |
 | ------------- | -------------------- | ------------------- |
-| panel         | string, undefined    | id начального panel |
-| view          | string, undefined    | id начального view  |
-| story         | string, undefined    | id начального story |
+| panel         | string, необязателен | id начального panel |
+| view          | string, необязателен | id начального view  |
+| story         | string, необязателен | id начального story |
 
 **Важно:** структура приложения должна быть определена лишь один раз.
 
