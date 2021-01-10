@@ -181,8 +181,8 @@ export let Home = memo(function Home({ id }) {
 ![](https://i.ibb.co/T8MNvKk/snackbars-2.gif)
 
 ## Управление модальными окнами
-Вызов модального окна ничем не отличается от <a href='navigation-push'>перехода на другую
-страницу</a>. Для закрытия модального окна необходимо вызвать метод <a href='navigation-back'>back</a>.
+Вызов модального окна ничем не отличается от <a href='#navigation-push'>перехода на другую
+страницу</a>. Для закрытия модального окна необходимо вызвать метод <a href='#navigation-back'>back</a>.
 
 Пример обработки модальных окон:
 ```jsx
@@ -209,10 +209,10 @@ let App = () => {
 }
 ```
 
-![](https://i.ibb.co/GWvgh7Z/modals.gif)
+![](https://i.ibb.co/wrxQrgQ/modals-2.gif)
 
 ## Управление всплывающими окнами
-...
+Отличие 
 
 <h2 id="passing-params">Передача параметров</h2>
 
