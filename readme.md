@@ -52,7 +52,7 @@ export function App() {
 
 ## Управление навигацией
 Для перехода на другое состояние навигации необходимо использовать хук `useRouter`. 
-#### push
+<h4 id="navigation-push">push</h4>
 Метод `push` позволяет добавлять новое состояние навигации в историю.
 Первым аргументом он принимает объект подобного вида:
 
@@ -85,7 +85,7 @@ export let Main = memo(function Main({ id }) {
 
 ![](https://i.ibb.co/yf7F2VT/push.gif)
 
-#### back
+<h4 id="navigation-back">back</h4>
 Метод `back` позволяет перейти на прошлое состояние навигации.
 ```jsx
 import {useRouter} from '@unexp/router'
@@ -181,7 +181,35 @@ export let Home = memo(function Home({ id }) {
 ![](https://i.ibb.co/T8MNvKk/snackbars-2.gif)
 
 ## Управление модальными окнами
-...
+Вызов модального окна ничем не отличается от <a href='navigation-push'>перехода на другую
+страницу</a>. Для закрытия модального окна необходимо вызвать метод <a href='navigation-back'>back</a>.
+
+Пример обработки модальных окон:
+```jsx
+let App = () => {
+  let { modal } = useStructure({ panel: 'main' })
+  let { push, back } = useRouter()
+
+  return (
+    <View
+      activePanel='main'
+      modal={
+        <ModalRoot activeModal={modal} onClose={back}>
+          <ModalCard id='info' onClose={back}>...</ModalCard>
+        </ModalRoot>
+      }>
+      <Panel id='main'>
+        <PanelHeader>Роутер</PanelHeader>
+        <SimpleCell onClick={() => push({ modal: 'info' })}>
+          Открыть модальное окно
+        </SimpleCell>
+      </Panel>
+    </View>
+  )
+}
+```
+
+![](https://i.ibb.co/GWvgh7Z/modals.gif)
 
 ## Управление всплывающими окнами
 ...
