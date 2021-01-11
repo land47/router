@@ -172,9 +172,9 @@ export class Navigator {
   /**
    * Дублирует текущую запись в истории браузера.
    */
-  duplicateRecord = () => {
-    this.history.pushState(this.history.state, '', this.location.search)
-    this.dispatchEvent(this.history.state)
+  duplicateRecord = (state: HistoryItemState = this.history.state) => {
+    this.history.pushState(state, '', this.location.search)
+    this.dispatchEvent(state)
   }
 
   /**

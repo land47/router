@@ -21,12 +21,8 @@ export let PopoutProvider: FC = ({ children }) => {
       setState({ popout })
 
       if (options.handleBackButton) {
-        navigator
-          .push(
-            navigator.convertSearchParams(navigator.location.search),
-            options
-          )
-          .then(() => navigator.createPhantomTask(closePopout))
+        navigator.duplicateRecord(options)
+        navigator.createPhantomTask(closePopout)
       }
     },
     []
