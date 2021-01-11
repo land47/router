@@ -1,7 +1,6 @@
-import { useContext } from 'react'
+import { useSafeContext } from '.'
 import { CacheContainerContext } from '../contexts'
 import { CacheContainer } from '../base'
 
-export function useCache<Key, Value>() {
-  return useContext(CacheContainerContext) as CacheContainer<Key, Value>
-}
+// prettier-ignore
+export let useCache = <Key, Value>() => useSafeContext(CacheContainerContext) as CacheContainer<Key, Value>
