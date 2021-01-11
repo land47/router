@@ -1,9 +1,3 @@
-<style type="text/css">
-  .highlight {
-    color: green;
-  }
-</style>
-
 ## Роутер
 Продвинутый и легковесный (2.7kB) роутер для приложений, написанных на основе
 [VKUI](https://github.com/VKCOM/VKUI).
@@ -37,7 +31,7 @@
 | ------------------- | -------------------- | ------------------- |
 | @happysanta/router  | 52kB                 | 11.4kB              |
 | @vkontakte/router   | 16.3kB               | 5.5kB               |
-| <span className="highlight">@unexp/router</span> | 8.4kB   | <span className="highlight">2.7kB</span>              |
+| **@unexp/router**   | **8.4kB**            | **2.7kB**           |
 
 
 ## Примеры приложений
