@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useEffect, useState } from 'react'
+import { FC, memo, useCallback, useEffect, useState } from 'react'
 import { SnackbarContext } from '../../contexts'
 import { SnackbarControls } from '../../shared/types'
 import { useNavigator } from '../../hooks'

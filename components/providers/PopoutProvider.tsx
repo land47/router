@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { PopoutContext } from '../../contexts'
 import { Popout, PopoutOptions } from '../../shared/types'
 import { useNavigator } from '../../hooks'

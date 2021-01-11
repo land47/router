@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Navigator } from '../../base'
 import { NavigatorContext } from '../../contexts'
 
