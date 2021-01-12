@@ -1,4 +1,12 @@
+import { ReactNode } from 'react'
 import { useSafeContext } from '.'
-import { SnackbarContext } from '../contexts'
+import * as Contexts from '../contexts'
 
-export let useSnackbar = () => useSafeContext(SnackbarContext)
+export function useSnackbar() {
+  let snackbar = useSafeContext(Contexts.Snackbar)
+
+  return {
+    setSnackbar: (node: ReactNode) => snackbar.set(node),
+    closeSnackbar: () => snackbar.close(),
+  }
+}
