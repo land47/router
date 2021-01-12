@@ -1,9 +1,13 @@
 {
   "name": "@unexp/router",
   "version": "0.0.17",
-  "description": "A very simple router for VKUI based apps.",
+  "description": "Modern and tiny 2.7kB router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
+  "source": "index.ts",
   "main": "dist/index.js",
+  "exports": "dist/index.modern.js",
+  "module": "dist/index.module.js",
+  "unpkg": "dist/index.umd.js",
   "files": [
     "dist"
   ],
@@ -17,7 +21,7 @@
     "navigator"
   ],
   "scripts": {
-    "cleaning": "del /S dist\\utils\\*.d.ts dist\\base\\*.d.ts dist\\contexts\\*.d.ts dist\\base\\**.d.ts dist\\shared\\*.d.ts dist\\components\\providers\\*.d.ts"
+    "build": "microbundle --jsx React.createElement --jsxFragment React.Fragment --external react"
   },
   "repository": {
     "type": "git",
@@ -29,6 +33,7 @@
   "homepage": "https://github.com/land47/router",
   "devDependencies": {
     "@types/react": "^17.0.0",
+    "microbundle": "^0.13.0",
     "tslint": "^6.1.3",
     "typescript": "^4.1.3"
   }
