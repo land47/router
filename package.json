@@ -1,6 +1,6 @@
 {
   "name": "@unexp/router",
-  "version": "0.0.15",
+  "version": "0.0.17",
   "description": "A very simple router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "main": "dist/index.js",
@@ -17,8 +17,7 @@
     "navigator"
   ],
   "scripts": {
-    "cleaning": "del /S dist\\utils\\*.d.ts dist\\base\\*.d.ts dist\\contexts\\*.d.ts dist\\base\\**.d.ts dist\\shared\\*.d.ts dist\\components\\providers\\*.d.ts",
-    "prepublish": "tsc & yarn cleaning"
+    "cleaning": "del /S dist\\utils\\*.d.ts dist\\base\\*.d.ts dist\\contexts\\*.d.ts dist\\base\\**.d.ts dist\\shared\\*.d.ts dist\\components\\providers\\*.d.ts"
   },
   "repository": {
     "type": "git",
