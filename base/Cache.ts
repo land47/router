@@ -1,4 +1,4 @@
-export class CacheContainer<Key, Value> {
+export class Cache<Key, Value> {
   /**
    * Контейнер, в котором хранится кэшированные данные.
    */
@@ -23,7 +23,7 @@ export class CacheContainer<Key, Value> {
    * Добавляет (или заменяет) значение по ключу в контейнер.
    */
   set = (key: Key, value: Value) => {
-    if (this.container.size === CacheContainer.MAX_SIZE) {
+    if (this.container.size === Cache.MAX_SIZE) {
       this.container.delete(this.container.keys().next().value)
     }
 
