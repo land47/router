@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SerializedURLParams } from '../shared/types'
-import { useNavigator } from './index'
+import { useSafeContext } from '.'
+import * as Contexts from '../contexts'
 
 /**
  * Подписывается на изменения URL-параметров, и если в них
@@ -15,7 +16,7 @@ import { useNavigator } from './index'
  * ```
  */
 export function useSearch<K extends string[]>(keys: K) {
-  let navigator = useNavigator()
+  let navigator = useSafeContext(Contexts.Navigator)
   let [searchParams, setSearchParams] = useState<SerializedURLParams<K>>()
 
   useEffect(() => {

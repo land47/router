@@ -1,11 +1,9 @@
 import { useCallback } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useCache, useNavigator } from '.'
-import {
-  withoutValue,
-  makeObjectSynchronous,
-  replaceFunctionsWithResult,
-} from '../utils'
+import * as Utils from '../utils'
+import * as Contexts from '../contexts'
+import * as Base from '../base'
+import { useSafeContext } from '.'
 
 /**
  * Значения, которые будут исключены (вместе с ключем)
@@ -17,8 +15,11 @@ let excludeValues = [null, undefined, 'null', 'undefined']
  * Возвращает интерфейс для работы с навигацией приложения.
  */
 export function useRouter() {
-  let navigator = useNavigator()
-  let cache = useCache<unknown, HistoryItemState>()
+  let navigator = useSafeContext(Contexts.Navigator)
+  let cache = useSafeContext(Contexts.Cache) as Base.Cache<
+    unknown,
+    HistoryItemState
+  >
 
   /**
    * Кэширует состояние.
@@ -35,8 +36,8 @@ export function useRouter() {
       return cache.get(state.key)
     }
 
-    let prepared = await makeObjectSynchronous(
-      replaceFunctionsWithResult(state)
+    let prepared = await Utils.makeObjectSynchronous(
+      Utils.replaceFunctionsWithResult(state)
     )
 
     if (state.key) {
@@ -50,7 +51,7 @@ export function useRouter() {
    * Обрабатывает структуру перед добавлением в историю браузера.
    */
   function prepareStructure(structure: ApplicationStructure) {
-    return withoutValue(
+    return Utils.withoutValue(
       {
         ...navigator.convertSearchParams(navigator.location.search),
         ...structure,

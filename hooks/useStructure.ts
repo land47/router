@@ -1,7 +1,8 @@
 import { ReactNode, useEffect } from 'react'
 import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useNavigator, usePopout, useRouter, useSearch } from '.'
-import { areObjectsEqual } from '../utils'
+import { useRouter, useSearch, useSafeContext, usePopout } from '.'
+import * as Utils from '../utils'
+import * as Contexts from '../contexts'
 
 type Structure<S extends ApplicationStructure> = S & {
   modal: ReactNode
@@ -17,21 +18,19 @@ export function useStructure<S extends ApplicationStructure, T>(
   options: HistoryItemState<T> = {}
 ): Structure<S> {
   let search = useSearch(Object.keys(initial)) as S
-  let navigator = useNavigator()
+  let navigator = useSafeContext(Contexts.Navigator)
   let router = useRouter()
+  let popout = usePopout()
 
   useEffect(() => {
     let hash = window.location.hash.slice(1)
 
-    // Фикс повторного первого рендера приложения
     navigator.freezeLifecycle()
     router.replace(initial, options).then(() => {
       let serialized = navigator.convertSearchParams(hash)
       navigator.unfreezeLifecycle()
 
-      // Если нет хеша, или начальная структура равна структуре,
-      // переданной хешем, пропускаем добавление записи.
-      if (!hash || areObjectsEqual(serialized, initial)) {
+      if (!hash || Utils.areObjectsEqual(serialized, initial)) {
         return
       }
 
@@ -42,5 +41,9 @@ export function useStructure<S extends ApplicationStructure, T>(
     })
   }, [])
 
-  return { modal: null, popout: usePopout().popout, ...(search || initial) }
+  return {
+    modal: null,
+    popout: popout.popout,
+    ...(search || initial),
+  }
 }
