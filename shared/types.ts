@@ -53,35 +53,3 @@ export type ApplicationStructure = {
  * Состояние записи (хранится и может быть доступно вместе с ней)
  */
 export type HistoryItemState<T = any> = Record<string, T>
-
-/**
- * Снэкбары
- */
-export type Snackbar = ReactNode
-
-/**
- * Интерфейс работы со снэкбаром.
- */
-export type SnackbarControls = {
-  setSnackbar(snackbar: Snackbar): void
-  closeSnackbar(): void
-}
-
-export type LaunchParamsControls = {
-  search: string
-}
-
-/**
- * Всплывающие окна.
- */
-export type Popout = ReactNode
-
-export type PopoutOptions = {
-  handleBackButton: boolean
-}
-
-export type PopoutControls = {
-  popout: Popout
-  setPopout(popout: Popout, options: PopoutOptions): void
-  closePopout(): void
-}
