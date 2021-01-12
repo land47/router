@@ -43,7 +43,7 @@ export class Linker extends Base.Cache<string, unknown> {
   getCurrent = (key: string) => {
     let { state } = this.navigator.history
 
-    if (!state || state.__linkerId !== key) {
+    if (!state || state.__linkerKey !== key) {
       return null
     }
 
