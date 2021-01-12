@@ -33,23 +33,21 @@ export class Linker extends Base.Cache<string, unknown> {
    * Позволяет добавить в историю любое значение, привязав его к
    * уникальному id и ключу.
    */
-  push = (el: unknown, _key: string) => {
-    let _uid = this.makeId()
-    this.set(_uid, el)
+  push = (el: unknown, key: string) => {
+    let id = this.makeId()
+    this.set(id, el)
 
-    this.navigator.push({
-      ...this.navigator.convertSearchParams(this.navigator.location.search),
-      _key,
-      _uid,
-    })
+    this.navigator.duplicateRecord({ __linkerId: id, __linkerKey: key })
   }
 
   getCurrent = (key: string) => {
-    let { _uid, _key } = this.navigator.convertSearchParams(
-      this.navigator.location.search
-    )
+    let { state } = this.navigator.history
 
-    return (_uid && _key === key && this.get(_uid)) || null
+    if (!state || state.__linkerId !== key) {
+      return null
+    }
+
+    return this.get(state.__linkerId) || null
   }
 
   back = () => {
