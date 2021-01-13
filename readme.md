@@ -1,14 +1,9 @@
 ## Роутер
-Продвинутый и легковесный (2.7kB) роутер для приложений, написанных на основе
+Продвинутый и легковесный (2kB) роутер для приложений, написанных на основе
 [VKUI](https://github.com/VKCOM/VKUI).
 
-## Мотивация
-По моему мнению, до сих пор не было нормальной реализации роутера для приложений, разрабатываемых на
-[VKUI](https://github.com/VKCOM/VKUI).
-
-Одни навязывают свои компоненты для реализации структуры, порождая за счет этого множество
-проблем, другие предоставляют сравнительно сложный интерфейс для реализации простейшей
-навигации.
+[![gzip size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js?label=gzip)](https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js)
+[![brotli size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js?compression=brotli&label=brotli)](https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js)
 
 ## Содержание
 - <a href='#примеры-приложений'>Примеры приложений</a>
