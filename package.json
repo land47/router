@@ -1,13 +1,16 @@
 {
   "name": "@unexp/router",
   "version": "0.0.18",
-  "description": "Modern and tiny 2.7kB router for VKUI based apps.",
+  "description": "Modern and tiny 1.7kB router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "source": "index.ts",
   "main": "dist/index.js",
   "exports": "dist/index.modern.js",
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
+  "mangle": {
+    "regex": "^[A-z]"
+  },
   "files": [
     "dist"
   ],
