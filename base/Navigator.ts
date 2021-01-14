@@ -15,8 +15,12 @@ export class Navigator {
 
   private isFrozenLifecycle = false
 
+  /** History API не предоставляет доступа к списку записей в истории, поэтому вот так */
+  historyItems: (SerializedURLParams & HistoryItemState)[] = []
+
   constructor() {
     window.addEventListener('popstate', this.lifecycle)
+    window.addEventListener('popstate', this.observer)
   }
 
   /**
@@ -33,6 +37,26 @@ export class Navigator {
     this.getListenersForCurrentLocation().forEach(({ handler }) =>
       handler(serialized)
     )
+  }
+
+  /**
+   * Слушает все изменения. В отличии от жизненного цикла, реализует
+   * заполнение `historyItems`
+   */
+  private observer = () => {
+    let previous = this.historyItems.slice(-2)[0]
+    let current = {
+      ...this.convertSearchParams(this.location.search),
+      ...this.history.state,
+    }
+
+    // Если прошлая запись не равна текущей, то это переход вперёд
+    if (!previous || !areObjectsEqual(previous, current)) {
+      return this.historyItems.push(current)
+    }
+
+    // Иначе, идентифицируем это как переход назад
+    this.historyItems = this.historyItems.slice(0, -1)
   }
 
   /**
