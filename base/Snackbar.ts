@@ -28,7 +28,11 @@ export class Snackbar {
   }
 
   removeListener = (listener: SnackbarListener) => {
-    this.listeners.splice(this.listeners.findIndex(listener))
+    let i = this.listeners.findIndex(listener)
+
+    if (i >= 0) {
+      this.listeners.splice(i, 1)
+    }
   }
 
   private updateState = (state: SnackbarState) => {

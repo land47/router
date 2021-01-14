@@ -7,12 +7,12 @@ import {
 import { areArraysEqual, hasIntersections, areObjectsEqual } from '../utils'
 
 export class Navigator {
-  private readonly listeners: HistoryListener[] = []
-  /**
-   * Список задач, которые будут выполненны при каждом
-   * вызове жизненного цикла.
-   */
-  private readonly tasks: VoidFunction[] = []
+  /** Список слушателей, подписанных на изменения истории */
+  private listeners: HistoryListener[] = []
+
+  /** Список задач, которые будут выполненны при каждом вызове жизненного цикла */
+  private tasks: VoidFunction[] = []
+
   private isFrozenLifecycle = false
 
   constructor() {
@@ -28,8 +28,10 @@ export class Navigator {
     }
 
     this.syncRunTasks()
+
+    let serialized = this.convertSearchParams(this.location.search)
     this.getListenersForCurrentLocation().forEach(({ handler }) =>
-      handler(this.convertSearchParams(this.location.search))
+      handler(serialized)
     )
   }
 
@@ -69,11 +71,9 @@ export class Navigator {
     handler: HistoryListenerHandler<K>
   ) => {
     // prettier-ignore
-    let index = this.listeners.findIndex(listener =>
-      listener.handler === handler && areArraysEqual(listener.keys, keys)
+    this.listeners = this.listeners.filter(listener =>
+      listener.handler !== handler && !areArraysEqual(listener.keys, keys)
     )
-
-    if (index) this.listeners.splice(index, 1)
   }
 
   /**
@@ -85,8 +85,7 @@ export class Navigator {
   }
 
   removeTask = (task: VoidFunction) => {
-    let index = this.tasks.findIndex(e => e === task)
-    if (index) this.tasks.splice(index, 1)
+    this.tasks = this.tasks.filter(e => e !== task)
   }
 
   /**
