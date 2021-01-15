@@ -5,12 +5,9 @@
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "source": "index.ts",
   "main": "dist/index.js",
-  "exports": "dist/index.modern.js",
+  "exports": "dist/index.js",
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
-  "mangle": {
-    "regex": "^[A-z]"
-  },
   "files": [
     "dist"
   ],

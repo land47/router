@@ -1,6 +1,7 @@
 import React, { FC, ReactNode, useEffect, useState } from 'react'
 import * as Base from '../base'
 import * as Contexts from '../contexts'
+import { SerializedURLParams } from '../shared/types'
 
 // LOGIC
 let cache = new Base.Cache()
@@ -10,6 +11,7 @@ let linker = new Base.Linker(navigator)
 
 /** Оборачивает приложение в необходимые провайдеры. */
 export let Router: FC = ({ children }) => {
+  let globalHistoryState = useState<SerializedURLParams[]>([])
   let [snackbarNode, setSnackbarNode] = useState<ReactNode>(null)
 
   // snackbars tracking
@@ -22,7 +24,9 @@ export let Router: FC = ({ children }) => {
         <Contexts.Navigator.Provider value={navigator}>
           <Contexts.Snackbar.Provider value={snackbar}>
             <Contexts.Linker.Provider value={linker}>
-              {children}
+              <Contexts.History.Provider value={globalHistoryState}>
+                {children}
+              </Contexts.History.Provider>
             </Contexts.Linker.Provider>
           </Contexts.Snackbar.Provider>
         </Contexts.Navigator.Provider>
