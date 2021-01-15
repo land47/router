@@ -5,5 +5,7 @@ export {
   useSnackbar,
   usePopout,
   useSwipeBack,
+  useLocation,
+  useHistory,
 } from './hooks'
 export { Router } from './components'

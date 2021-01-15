@@ -19,8 +19,8 @@ export class Navigator {
   historyItems: (SerializedURLParams & HistoryItemState)[] = []
 
   constructor() {
-    window.addEventListener('popstate', this.lifecycle)
     window.addEventListener('popstate', this.observer)
+    window.addEventListener('popstate', this.lifecycle)
   }
 
   /**
@@ -52,7 +52,8 @@ export class Navigator {
 
     // Если прошлая запись не равна текущей, то это переход вперёд
     if (!previous || !areObjectsEqual(previous, current)) {
-      return this.historyItems.push(current)
+      this.historyItems = [...this.historyItems, current]
+      return
     }
 
     // Иначе, идентифицируем это как переход назад
