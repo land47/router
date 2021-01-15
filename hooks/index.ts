@@ -1,4 +1,3 @@
-export { useSearch } from './useSearch'
 export { useStructure } from './useStructure'
 export { useRouter } from './useRouter'
 export { useParams } from './useParams'
