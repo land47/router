@@ -5,7 +5,7 @@ import * as Utils from '../utils'
 import * as Contexts from '../contexts'
 
 type Structure<S extends ApplicationStructure> = S & {
-  modal: ReactNode
+  modal: string | null
   popout: ReactNode
 }
 
