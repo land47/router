@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import bridge from '@vkontakte/vk-bridge'
 import { useHistory, useLocation, useRouter } from '.'
 import { SerializedURLParams } from '../shared/types'
 
@@ -7,13 +9,9 @@ function getPanelsHistoryByView(history: SerializedURLParams[], view: string) {
   let bool = reversed.map(item => item.view === view)
   let incorrectIndex = bool.findIndex(b => !b)
 
-  if (incorrectIndex >= 0) {
-    return reversed
-      .slice(0, incorrectIndex)
-      .reduceRight((acc: string[], item) => [...acc, item.panel || ''], [])
-  }
-
-  return []
+  return reversed
+    .slice(0, incorrectIndex >= 0 ? incorrectIndex : reversed.length)
+    .reduceRight((acc: string[], item) => [...acc, item.panel || ''], [])
 }
 
 /** TODO */
@@ -25,6 +23,14 @@ export function useSwipeBack() {
   let history = useHistory()
   let location = useLocation()
   let router = useRouter()
+
+  useEffect(() => {
+    if (history.length > 1) {
+      return void bridge.send('VKWebAppDisableSwipeBack')
+    }
+
+    bridge.send('VKWebAppEnableSwipeBack')
+  }, [history])
 
   return {
     history: location.view

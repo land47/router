@@ -20,7 +20,6 @@ export function useRouter() {
     unknown,
     HistoryItemState
   >
-  let history = useHistory()
 
   /**
    * Кэширует состояние.
