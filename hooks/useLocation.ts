@@ -1,5 +1,12 @@
-import { useHistory } from '.'
+import { useHistory, useSafeContext } from '.'
+import * as Contexts from '../contexts'
 
 export function useLocation() {
-  return useHistory().slice(-1)[0] || {}
+  let navigator = useSafeContext(Contexts.Navigator)
+  let history = useHistory()
+
+  return (
+    history.slice(-1)[0] ||
+    navigator.convertSearchParams(navigator.location.search)
+  )
 }

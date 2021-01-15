@@ -23,20 +23,16 @@ export function useStructure<S extends ApplicationStructure, T>(
   let popout = usePopout()
 
   useEffect(() => {
-    let hash = window.location.hash.slice(1)
+    let hash = navigator.convertSearchParams(window.location.hash.slice(1))
 
-    router.replace(initial, options).then(() => {
-      let serialized = navigator.convertSearchParams(hash)
+    if (Utils.isObjectEmpty(hash)) {
+      return void router.replace(initial, options)
+    }
 
-      if (!hash || Utils.areObjectsEqual(serialized, initial)) {
-        return
-      }
-
-      // Не включаем данные о структуре в параметры.
-      // #panel=home&a=1&b=2 => { a: '1', b: '2' }
-      let params = (({ modal, story, view, panel, ...o }) => o)(serialized)
-      router.push(serialized, params)
-    })
+    // Не включаем данные о структуре в параметры.
+    // #panel=home&a=1&b=2 => { a: '1', b: '2' }
+    let params = (({ modal, story, view, panel, ...o }) => o)(hash)
+    router.push(hash, params)
   }, [])
 
   return {
