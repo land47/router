@@ -1,38 +1,43 @@
 ## Роутер
-Продвинутый и легковесный (2kB) роутер для приложений, написанных на основе
+Продвинутый и легковесный (~2kB) роутер для приложений, написанных на основе
 [VKUI](https://github.com/VKCOM/VKUI).
 
-[![gzip size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.19/dist/index.modern.js?label=gzip)](https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js)
-[![brotli size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.19/dist/index.modern.js?compression=brotli&label=brotli)](https://unpkg.com/@unexp/router@0.0.18/dist/index.modern.js)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js?label=gzip)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
+[![brotli size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js?compression=brotli&label=brotli)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
 
 ## Содержание
-- <a href='#примеры-приложений'>Примеры приложений</a>
 - <a href='#установка'>Установка</a>
-- <a href='#структура-приложения'>Структура приложения</a>
+- <a href='#подготовка'>Подготовка</a>
+- <a href='#определение-структуры'>Определение структуры</a>
 - <a href='#управление-навигацией'>Управление навигацией</a>
 - <a href='#управление-снэкбарами'>Управление снэкбарами</a>
 - <a href='#управление-модальными-окнами'>Управление модальными окнами</a>
 - <a href='#управление-всплывающими-окнами'>Управление всплывающими окнами</a>
+- <a href='#обработка-свайпбеков'>Обработка iOS SwipeBack</a>
 - <a href='#передача-параметров'>Передача параметров</a>
 - <a href='#передача-асинхронных-параметров'>Передача асинхронных параметров</a>
 - <a href='#кэширование-параметров'>Кэширование параметров</a>
 - <a href='#работа-с-хэшем'>Работа с хэшем</a>
-- <a href='#доступ-к-навигатору'>Доступ к навигатору</a>
-
-
-## Примеры приложений
-Очень скоро...
+- <a href='#справочник-api'>Справочник API</a>
+  - <a href='#router'>Router</a>
+  - <a href='#usestructure'>useStructure</a>
+  - <a href='#userouter'>useRouter</a>
+  - <a href='#useparams'>useParams</a>
+  - <a href='#usesnackbar'>useSnackbar</a>
+  - <a href='#usepopout'>usePopout</a>
+  - <a href='#useswipeback'>useSwipeBack</a>
+  - <a href='#uselocation'>useLocation</a>
+  - <a href='#usehistory'>useHistory</a>
+- <a href='#лицензия'>Лицензия</a>
 
 ## Установка
 `yarn add @unexp/router` или `npm i @unexp/router` 
 
-**Важно:** так же необходимо установить [`peerDependencies`](https://github.com/land47/router/blob/master/package.json#L32).
-
-## После установки
+## Подготовка
 После установки приложение необходимо обернуть в компонент-провайдер `Router`:
 ```jsx
 // ...imports
-import { Router } from '@unexp/router'
+import {Router} from '@unexp/router'
 
 ReactDOM.render(
   <Router>
@@ -42,26 +47,27 @@ ReactDOM.render(
 )
 ```
 
-## Структура приложения
-У каждого приложения, использующего `VKUI` имееется своя структура. Для её установки в роутере
-реализован хук `useStructure`. Он возвращает текущее состояние навигации и обновляет его при
-переходе на новое.
+## Определение структуры
+У каждого приложения на `VKUI` есть своя структура. Роутер реализует хук `useStructure`, с помощью
+которого можно установить начальную структуру, и которая будет обновлятся при переходе на другие
+панели.
 
-Пример:
+
+Пример использования:
 ```jsx
 // ...imports
-import { useStructure } from '@unexp/router'
+import {useStructure} from '@unexp/router'
 
 export function App() {
-  let { view, panel, popout } = useStructure({ view: 'home', panel: 'main' })
+  let structure = useStructure({ view: 'home', panel: 'main' })
 
   return (
-    <Root popout={popout} activeView={view}>
-      <View id='home' activePanel={panel}>
+    <Root popout={structure.popout} activeView={structure.view}>
+      <View id='home' activePanel={structure.panel}>
         <Panel id='main'>...</Panel>
       </View>
 
-      <View id='settings' activePanel={panel}>
+      <View id='settings' activePanel={structure.panel}>
         <Panel id='main'>...</Panel>
         <Panel id='choose_country'>...</Panel>
       </View>
@@ -70,39 +76,32 @@ export function App() {
 }
 ```
 
-Описание принимаемого объекта: 
-| Свойство      | Тип                  | Описание            |
-| ------------- | -------------------- | ------------------- |
-| panel         | string, необязателен | id начального panel |
-| view          | string, необязателен | id начального view  |
-| story         | string, необязателен | id начального story |
-
 **Важно:** структура приложения должна быть определена лишь один раз.
-
-Описание возвращаемого объекта (объект <a id='structure'>Structure</a>):
-| Свойство      | Тип                  | Описание                         |
-| ------------- | -------------------- | -------------------------------- |
-| panel         | string, undefined    | id текущего panel                |
-| view          | string, undefined    | id текущего view                 |
-| story         | string, undefined    | id текущего story                |
-| modal         | string, null         | id текущего modal                |
-| popout        | ReactNode            | Открытое сейчас всплывающее окно |
 
 ## Управление навигацией
 Интерфейс для управления навигацией предоставляет хук `useRouter`. В этом разделе описаны его
 методы. 
 
 #### push
-Метод `push` позволяет добавлять новое состояние навигации в историю. Первым аргументом он принимает
-объект <a href='#structure'>Structure</a>, а вторым аргументом (передавать его необязательно)
-<a href='#передача-параметров'>объект параметров</a>.
+Метод `push` позволяет добавлять новое состояние навигации в историю. Первым аргументом нужно
+передать следующее состояние навигации в виде объекта:
 
+| Свойство      | Тип                           | Описание                            |
+| ------------- | ----------------------------- | ----------------------------------- |
+| panel         | string (необязателен)         | id активной панели                  |
+| view          | string (необязателен)         | id активного вью                    |
+| story         | string (необязателен)         | id активной story                   |
+| modal         | string (необязателен)         | id активного модального окна        |
+
+Вторым аргументом метод может принимать <a href='#передача-параметров'>объект параметров</a>.
+
+Пример использования:
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function Main() {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   return (
     <Panel>
@@ -122,10 +121,10 @@ export function Main() {
 Метод `back` позволяет перейти на прошлое состояние навигации.
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function Settings() {
-  let { back } = useRouter()  
+  let {back} = useRouter()  
 
   return (
     <Panel>
@@ -140,13 +139,14 @@ export function Settings() {
 ![](https://i.ibb.co/0J62Lkm/back.gif)
 
 #### replace
-В отличии метода `push`, метод `replace` заменяет текущее состояние навигации.
+В отличии метода `push`, метод `replace` заменяет текущее состояние навигации. В остальном их
+API не отличается.
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function Settings() {
-  let { replace } = useRouter()
+  let {replace} = useRouter()
 
   return (
     <Panel>
@@ -167,10 +167,10 @@ export function Settings() {
 вперед, так и назад, в зависимости от значения переданного параметра.
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function About() {
-  let { go } = useRouter()  
+  let {go} = useRouter()  
 
   return (
     <Panel>
@@ -189,13 +189,12 @@ export function About() {
 ## Управление снэкбарами
 Для показа коротких сообщений в нижней части экрана (снэкбаров) реализован хук `useSnackbar`.
 
-**Немного подробностей:** при переходе на новое состояние навигации снэкбар закрывается.
 ```jsx
 // ...imports
-import { useSnackbar } from '@unexp/router'
+import {useSnackbar} from '@unexp/router'
 
 export function Home() {
-  let { setSnackbar, closeSnackbar } = useSnackbar()  
+  let {setSnackbar, closeSnackbar} = useSnackbar()  
 
   function showError() {
     setSnackbar(
@@ -223,13 +222,16 @@ export function Home() {
 
 Пример обработки модальных окон:
 ```jsx
+// ...imports
+import {useStructure, useRouter} from '@unexp/router'
+
 export function App() {
-  let { modal } = useStructure({ panel: 'main' })
-  let { push, back } = useRouter()
+  let {modal, panel} = useStructure({ panel: 'main' })
+  let {push, back} = useRouter()
 
   return (
     <View
-      activePanel='main'
+      activePanel={panel}
       modal={
         <ModalRoot activeModal={modal} onClose={back}>
           <ModalCard id='info' onClose={back}>...</ModalCard>
@@ -252,30 +254,29 @@ export function App() {
 Для обработки [всплывающих окон](https://vkcom.github.io/VKUI/#section-popouts) реализован хук
 `usePopout`.
 
-Возвращаемый им объект:
+Возвращаемый объект:
+
 | Метод         | Описание                      | Аргументы                           |
 | ------------- | ----------------------------- | ----------------------------------- |
-| setPopout     | Устаналивает всплывающее окно | popout: ReactNode, options: Options |
+| setPopout     | Устаналивает всплывающее окно | popout: ReactNode                   |
 | closePopout   | Закрывает всплывающее окно    | нет                                 |
-
-Описание объекта Options:
-| Свойство             | Описание                                               |
-| -------------------- | ------------------------------------------------------ |
-| handleBackButton     | Нужно ли закрывать всплывающее окно при переходе назад |
 
 Пример обработки всплывающих окон:
 ```jsx
+// ...imports
+import {useStructure, usePopout} from '@unexp/router'
+
 export function App() {
-  let { popout } = useStructure({ panel: 'main' })
-  let { setPopout, closePopout } = usePopout()
+  let {popout, panel} = useStructure({ panel: 'main' })
+  let {setPopout, closePopout} = usePopout()
 
   return (
-    <View popout={popout} activePanel='main'>
+    <View popout={popout} activePanel={panel}>
       <Panel id='main'>
         <PanelHeader>Роутер</PanelHeader>
         <SimpleCell
           onClick={() => {
-            setPopout(<ScreenSpinner />, { handleBackButton: false })
+            setPopout(<ScreenSpinner />)
             setTimeout(closePopout, 1000)
           }}>
           Показать спиннер
@@ -306,6 +307,38 @@ export function App() {
 
 ![](https://i.ibb.co/M2SV2rH/spinner.gif) ![](https://i.ibb.co/mhc20Gh/alert.gif)
 
+## Обработка свайпбеков
+В iOS есть возможность свайпнуть от левого края назад, чтобы перейти на предыдущую панель. Для
+обработки свайпбеков достаточно вызовать хук `useSwipeBack` и прокинуть возвращаемый им объект
+нужной (или всем) вью.
+
+Пример:
+```jsx
+// ...imports
+import {useStructure, useSwipeBack} from '@unexp/router'
+
+export function App() {
+  let {view, panel} = useStructure({ view: 'home', panel: 'main' })
+  let withSwipeBack = useSwipeBack()
+
+  return (
+    <Root activeView={view}>
+      <View {...withSwipeBack} id='home' activePanel={panel}>
+        [panels]
+      </View>
+
+      <View {...withSwipeBack} id='about' activePanel={panel}>
+        [panels]
+      </View>
+    </Root>
+  )
+}
+```
+
+Отлично, теперь роутер автоматически подставит нужные значения нужной вью для корректной обработки
+свайпбеков.
+
+![](https://i.ibb.co/VpxNXFM/swipeback-2.gif)
 
 ## Передача параметров
 
@@ -316,10 +349,10 @@ export function App() {
 аргументом объект.
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function Home() {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   return (
     <Panel>
@@ -337,10 +370,10 @@ export function Home() {
 И наконец, чтобы получить параметры о текущей записи, мы можем использовать хук `useParams`.
 ```jsx
 // ...imports
-import { useParams } from '@unexp/router'
+import {useParams} from '@unexp/router'
 
 export function Product() {
-  let { productId } = useParams() 
+  let {productId} = useParams() 
 
   return (
     <Panel>
@@ -354,12 +387,13 @@ export function Product() {
 
 ## Передача асинхронных параметров
 Есть несколько способов передать асинхронные параметры. Рассмотрим единственно верный:
+
 ```jsx
 // ...imports
-import { useRouter } from '@unexp/router'
+import {useRouter} from '@unexp/router'
 
 export function Home() {
-  let { push } = useRouter()  
+  let {push} = useRouter()  
 
   async function fetchUser() {
     // Функция возвращает промис
@@ -376,13 +410,24 @@ export function Home() {
   )
 }
 ```
-**Очень важно:** стоит обратить внимание на то, что в этом случае функция не вызывается. Мы передаём
+Стоит обратить внимание на то, что в этом случае функция не вызывается. Мы передаём
 лишь ссылку на неё. При этом при получении параметров с помощью хука `useParams` на месте `user`
 будет результат вызова функции.
+
+Чтобы это не казалось магией, объясняю шаги, которые проделает метод `push` в данном случае.
+
+1. Вызовет функцию fetchUser.
+2. Подождёт завершения промиса.
+3. Добавит запись в историю.
+
+```typescript
+{ user: fetchUser } -> { user: Promise<{ ... }> } -> { user: { ... } }
+```
 
 ## Кэширование параметров
 Крутая и интересная фича моего роутера – кэширование параметров. Она отлично сочетается с асинхронными
 параметрами. Модифицируем пример, предоставленный выше:
+
 ```jsx
 // ...imports
 import { useRouter } from '@unexp/router'
@@ -422,37 +467,69 @@ export function Home() {
 - vk.com/app123#view=home&panel=main
 - vk.com/app123#story=story_id&view=view_id&panel=panel_id
 
-Все три примера будут корректно обработаны.
+Все три примера будут корректно обработаны. Вы также можете передавать параметры для состояния.
+
+Например, при переходе по такой ссылке откроется панель `about`.
+- vk.com/app123#panel=about&hash=000&id=123
+
+А объект, полученный с помощью <a href='#useparams'>useParams</a>, будет таким:
+```typescript
+{ hash: "000", id: "123" }
+```
 
 ![](https://i.ibb.co/W59pZZC/hash.gif)
 
-## Доступ к навигатору
-Обычно вам не потребуется получать доступ до навигатора, но пакет предоставляет такую
-возможность.
+## Справочник API
 
-Получение навигатора:
-```jsx
-// ...imports
-import { useNavigator } from '@unexp/router'
+### Router
+Компонент-провайдер, в который обязательно оборачивать ваше приложение. Если вы этого не сделаете, 
+то увидите соответствующую ошибку.
 
-export function App() {
-  let navigator = useNavigator()
+### useStructure
+С помощью этого хука определяется структура приложения. Он возвращает объект с текущим состоянием
+навигации и обновляет его при изменении (подобно хуку <a href='#uselocation'>useLocation</a>).
 
-  useEffect(() => {
-    navigator.createListener(['panel'], ({ panel }) => 
-      console.log(`Переход на панель ${panel}`)
-    )
-  }, [])
+Первым аргументом хук принимает начальную структуру приложения:
 
-  return (
-    <View>...</View>
-  )
-}
-```
+| Свойство      | Тип                      |
+| ------------- | ------------------------ |
+| panel         | string (необязателен)    |
+| view          | string (необязателен)    |
+| story         | string (необязателен)    |
 
-<a href='https://github.com/land47/router/blob/master/base/Navigator.ts'>
-API навигатора можно посмотреть здесь.
-</a>
+И возвращает объект с текущим состоянием (которое обновляет при изменении):
+
+| Свойство      | Тип                      |
+| ------------- | ------------------------ |
+| panel         | string                   |
+| view          | string                   |
+| story         | string                   |
+| modal         | string                   |
+| popout        | ReactNode                |
+
+### useRouter
+Основной хук для осуществления навигации.
+
+### useParams
+Возвращает параметры текущей записи. Передавать параметры можно с
+помощью хука <a href='#передача-параметров'>useRouter</a>.
+
+### useSnackbar
+Возвращает интерфейс для управления снэкбарами. С помощью него можно показывать короткие
+сообщения внизу экрана.
+
+### usePopout
+Возвращает интерфейс для управления всплывающими окнами (popouts, не путать с модальными)
+
+### useSwipeBack
+Возвращает объект, который можно прокинуть любой из `View`. Автоматически определяет историю для
+текущей `View` и обрабатывает переход назад.
+
+### useLocation
+Возвращает текущее состояние навигации и обновляет при его изменении.
+
+### useHistory
+Возвращает историю переходов между состояниями.
 
 ## Лицензия
 <a href='https://choosealicense.com/licenses/mit/'>MIT</a>
