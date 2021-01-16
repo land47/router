@@ -20,6 +20,7 @@
 - <a href='#работа-с-хэшем'>Работа с хэшем</a>
 - <a href='#справочник-api'>Справочник API</a>
   - <a href='#router'>Router</a>
+  - <a href='#navigator'>Navigator</a>
   - <a href='#usestructure'>useStructure</a>
   - <a href='#userouter'>useRouter</a>
   - <a href='#useparams'>useParams</a>
@@ -484,6 +485,43 @@ export function Home() {
 ### Router
 Компонент-провайдер, в который обязательно оборачивать ваше приложение. Если вы этого не сделаете, 
 то увидите соответствующую ошибку.
+
+### Navigator
+Навигатор – это декларативная реализация хука <a href='#usestructure'>useStructure</a>. Что
+использовать – решать вам, но при использовании навигатора, в отличии от `useStructure`, первый
+рендер дублироваться не будет.
+
+Описание пропсов, которых он ожидает:
+
+| Название      | Тип                           | Описание                                          |
+| ------------- | ----------------------------- | ------------------------------------------------- |
+| panel         | string (необязателен)         | Начальный panel                                   |
+| view          | string (необязателен)         | Начальный view                                    |
+| story         | string (необязателен)         | Начальный story                                   |
+| children      | (structure) => ReactElement   | Функция, которая реагирует на изменения структуры |
+
+```jsx
+// ...imports
+import {Navigator} from '@unexp/router'
+
+export function App() {
+  return (
+    <Navigator view='home' panel='main'>
+      {({ view, panel }) => (
+        <Root activeView={view}>
+          <View activePanel={panel} id='home'>
+            <Panel id='main' />
+          </View>
+
+         <View activePanel={panel} id='about'>
+            <Panel id='main' />
+          </View>
+        </Root>
+      )}
+    </Navigator>
+  )
+}
+```
 
 ### useStructure
 С помощью этого хука определяется структура приложения. Он возвращает объект с текущим состоянием

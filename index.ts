@@ -8,4 +8,4 @@ export {
   useLocation,
   useHistory,
 } from './hooks'
-export { Router } from './components'
+export { Router, Navigator } from './components'
