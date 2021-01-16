@@ -2,8 +2,8 @@
 Продвинутый и легковесный (~2kB) роутер для приложений, написанных на основе
 [VKUI](https://github.com/VKCOM/VKUI).
 
-[![gzip size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js?label=gzip)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
-[![brotli size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js?compression=brotli&label=brotli)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
+[![brotli size](http://img.badgesize.io/https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js?compression=brotli)](https://unpkg.com/@unexp/router@0.0.20/dist/index.modern.js)
 
 ## Содержание
 - <a href='#установка'>Установка</a>
