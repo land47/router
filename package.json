@@ -1,6 +1,6 @@
 {
   "name": "@unexp/router",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Modern and tiny ~2kB router for VKUI based apps.",
   "author": "Anton Zahariev <jjoska@yandex.ru>",
   "source": "index.ts",
