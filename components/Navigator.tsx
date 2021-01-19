@@ -4,18 +4,20 @@ import { useStructure } from '../hooks'
 import * as Utils from '../utils'
 
 export type NavigatorProps = {
+  children: (structure: ApplicationStructure) => ReactElement
   story?: string
   view?: string
   panel?: string
-  children: (structure: ApplicationStructure) => ReactElement
+  unstableHandleHash: boolean
 }
 
 export let Navigator: FC<NavigatorProps> = ({
   story,
   view,
   panel,
-  children,
+  unstableHandleHash = false,
+  children: render,
 }) => {
-  let structure = useStructure({ story, view, panel })
-  return Utils.isObjectEmpty(structure) ? null : children(structure)
+  let structure = useStructure({ story, view, panel }, unstableHandleHash)
+  return Utils.isObjectEmpty(structure) ? null : render(structure)
 }

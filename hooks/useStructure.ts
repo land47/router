@@ -15,7 +15,7 @@ type Structure<S extends ApplicationStructure> = S & {
  */
 export function useStructure<S extends ApplicationStructure, T>(
   initial: S,
-  options: HistoryItemState<T> = {}
+  unstableHandleHash = false
 ): Structure<S> {
   let location = useLocation() as S
   let navigator = useSafeContext(Contexts.Navigator)
@@ -25,8 +25,8 @@ export function useStructure<S extends ApplicationStructure, T>(
   useEffect(() => {
     let hash = navigator.convertSearchParams(window.location.hash.slice(1))
 
-    if (Utils.isObjectEmpty(hash)) {
-      return void router.replace(initial, options)
+    if (!unstableHandleHash || Utils.isObjectEmpty(hash)) {
+      return void router.replace(initial)
     }
 
     // Не включаем данные о структуре в параметры.
