@@ -1,8 +1,7 @@
 import { ReactNode, useEffect } from 'react'
-import { ApplicationStructure, HistoryItemState } from '../shared/types'
-import { useRouter, useLocation, useSafeContext, usePopout } from '.'
+import { ApplicationStructure } from '../shared/types'
+import { useLocation, usePopout, useNavigator } from '.'
 import * as Utils from '../utils'
-import * as Contexts from '../contexts'
 
 type Structure<S extends ApplicationStructure> = S & {
   modal: string | null
@@ -14,30 +13,15 @@ type Structure<S extends ApplicationStructure> = S & {
  * в случае перехода на другое состояние навигации.
  */
 export function useStructure<S extends ApplicationStructure, T>(
-  initial: S,
-  unstableHandleHash = false
+  initial: S
 ): Structure<S> {
-  let location = useLocation() as S
-  let navigator = useSafeContext(Contexts.Navigator)
-  let router = useRouter()
-  let popout = usePopout()
+  let location = useLocation()
+  let navigator = useNavigator()
+  let { popout } = usePopout()
 
   useEffect(() => {
-    let hash = navigator.convertSearchParams(window.location.hash.slice(1))
-
-    if (!unstableHandleHash || Utils.isObjectEmpty(hash)) {
-      return void router.replace(initial)
-    }
-
-    // Не включаем данные о структуре в параметры.
-    // #panel=home&a=1&b=2 => { a: '1', b: '2' }
-    let params = (({ modal, story, view, panel, ...o }) => o)(hash)
-    router.push(hash, params)
+    navigator.replace(Utils.withoutValue(initial, undefined))
   }, [])
 
-  return {
-    modal: null,
-    popout: popout.popout,
-    ...(Utils.isObjectEmpty(location) ? initial : location),
-  }
+  return { modal: null, popout, ...location } as Structure<S>
 }
