@@ -15,14 +15,11 @@
 - <a href='#управление-всплывающими-окнами'>Управление всплывающими окнами</a>
 - <a href='#обработка-свайпбеков'>Обработка iOS SwipeBack</a>
 - <a href='#передача-параметров'>Передача параметров</a>
-- <a href='#передача-асинхронных-параметров'>Передача асинхронных параметров</a>
-- <a href='#кэширование-параметров'>Кэширование параметров</a>
-- <a href='#работа-с-хэшем'>Работа с хэшем</a>
 - <a href='#справочник-api'>Справочник API</a>
   - <a href='#router'>Router</a>
-  - <a href='#navigator'>Navigator</a>
   - <a href='#usestructure'>useStructure</a>
   - <a href='#userouter'>useRouter</a>
+  - <a href='#usenavigator'>useNavigator</a>
   - <a href='#useparams'>useParams</a>
   - <a href='#usesnackbar'>useSnackbar</a>
   - <a href='#usepopout'>usePopout</a>
@@ -386,142 +383,11 @@ export function Product() {
 
 ![](https://i.ibb.co/N9dSDJQ/products.gif)
 
-## Передача асинхронных параметров
-Есть несколько способов передать асинхронные параметры. Рассмотрим единственно верный:
-
-```jsx
-// ...imports
-import {useRouter} from '@unexp/router'
-
-export function Home() {
-  let {push} = useRouter()  
-
-  async function fetchUser() {
-    // Функция возвращает промис
-  }
-
-  return (
-    <Panel id={id}>
-      <SimpleCell
-        onClick={() => push({ panel: 'profile' }, { user: fetchUser })} // <--
-      >
-        Перейти в профиль
-      </SimpleCell>
-    </Panel>
-  )
-}
-```
-Стоит обратить внимание на то, что в этом случае функция не вызывается. Мы передаём
-лишь ссылку на неё. При этом при получении параметров с помощью хука `useParams` на месте `user`
-будет результат вызова функции.
-
-Чтобы это не казалось магией, объясняю шаги, которые проделает метод `push` в данном случае.
-
-1. Вызовет функцию fetchUser.
-2. Подождёт завершения промиса.
-3. Добавит запись в историю.
-
-```typescript
-{ user: fetchUser } -> { user: Promise<{ ... }> } -> { user: { ... } }
-```
-
-## Кэширование параметров
-Крутая и интересная фича моего роутера – кэширование параметров. Она отлично сочетается с асинхронными
-параметрами. Модифицируем пример, предоставленный выше:
-
-```jsx
-// ...imports
-import { useRouter } from '@unexp/router'
-
-export function Home() {
-  let { push } = useRouter()  
-
-  async function fetchUser() {
-    // Функция возвращает промис
-  }
-
-  return (
-    <Panel>
-      <SimpleCell
-        onClick={() => push({ panel: 'profile' }, { user: fetchUser, key: 'myKey' })} // <--
-      >
-        Перейти в профиль
-      </SimpleCell>
-    </Panel>
-  )
-}
-```
-Мы добавили уникальный ключ параметрам (свойство `key`). Таким образом после первого вызова функции `fetchUser` её
-значение будет закешировано. Это означает, что при каждом следующем переходе на панель `profile` с ключом `myKey` 
-пользователю не придётся ждать повторного выполнения функции `fetchUser`.
-
-В примере ниже видно, что функция `fetchUser` вызывается лишь один раз. При последующих переходах на панель `profile` с
-ключом `myKey` параметры будут браться из кэша.
-
-![a](https://s8.gifyu.com/images/wtf3.gif)
-
-
-## Работа с хэшем
-Роутер уже умеет обрабатывать хеш, переданный в ссылке на ваше приложение.
-
-- vk.com/app123#panel=home
-- vk.com/app123#view=home&panel=main
-- vk.com/app123#story=story_id&view=view_id&panel=panel_id
-
-Все три примера будут корректно обработаны. Вы также можете передавать параметры для состояния.
-
-Например, при переходе по такой ссылке откроется панель `about`.
-- vk.com/app123#panel=about&hash=000&id=123
-
-А объект, полученный с помощью <a href='#useparams'>useParams</a>, будет таким:
-```typescript
-{ hash: "000", id: "123" }
-```
-
-![](https://i.ibb.co/W59pZZC/hash.gif)
-
 ## Справочник API
 
 ### Router
 Компонент-провайдер, в который обязательно оборачивать ваше приложение. Если вы этого не сделаете, 
 то увидите соответствующую ошибку.
-
-### Navigator
-Навигатор – это декларативная реализация хука <a href='#usestructure'>useStructure</a>. Что
-использовать – решать вам, но при использовании навигатора, в отличии от `useStructure`, первый
-рендер дублироваться не будет.
-
-Описание пропсов, которых он ожидает:
-
-| Название      | Тип                           | Описание                                          |
-| ------------- | ----------------------------- | ------------------------------------------------- |
-| panel         | string (необязателен)         | Начальный panel                                   |
-| view          | string (необязателен)         | Начальный view                                    |
-| story         | string (необязателен)         | Начальный story                                   |
-| children      | (structure) => ReactElement   | Функция, которая реагирует на изменения структуры |
-
-```jsx
-// ...imports
-import {Navigator} from '@unexp/router'
-
-export function App() {
-  return (
-    <Navigator view='home' panel='main'>
-      {({ view, panel }) => (
-        <Root activeView={view}>
-          <View activePanel={panel} id='home'>
-            <Panel id='main' />
-          </View>
-
-         <View activePanel={panel} id='about'>
-            <Panel id='main' />
-          </View>
-        </Root>
-      )}
-    </Navigator>
-  )
-}
-```
 
 ### useStructure
 С помощью этого хука определяется структура приложения. Он возвращает объект с текущим состоянием
@@ -547,6 +413,9 @@ export function App() {
 
 ### useRouter
 Основной хук для осуществления навигации.
+
+### useNavigator
+Возвращает инстанс <a href='https://github.com/land47/router/blob/master/base/Navigator.ts'>Навигатора</a>.
 
 ### useParams
 Возвращает параметры текущей записи. Передавать параметры можно с
