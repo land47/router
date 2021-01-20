@@ -23,5 +23,9 @@ export function useStructure<S extends ApplicationStructure, T>(
     navigator.replace(Utils.withoutValue(initial, undefined))
   }, [])
 
-  return { modal: null, popout, ...location } as Structure<S>
+  return {
+    modal: null,
+    popout,
+    ...(Utils.isObjectEmpty(location) ? initial : location),
+  } as Structure<S>
 }
