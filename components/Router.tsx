@@ -3,8 +3,6 @@ import * as Base from '../base'
 import * as Contexts from '../contexts'
 import { SerializedURLParams } from '../shared/types'
 
-// LOGIC
-let cache = new Base.Cache()
 let navigator = new Base.Navigator()
 let snackbar = new Base.Snackbar()
 let linker = new Base.Linker(navigator)
@@ -20,17 +18,15 @@ export let Router: FC = ({ children }) => {
   return (
     <>
       {snackbarNode}
-      <Contexts.Cache.Provider value={cache}>
-        <Contexts.Navigator.Provider value={navigator}>
-          <Contexts.Snackbar.Provider value={snackbar}>
-            <Contexts.Linker.Provider value={linker}>
-              <Contexts.History.Provider value={globalHistoryState}>
-                {children}
-              </Contexts.History.Provider>
-            </Contexts.Linker.Provider>
-          </Contexts.Snackbar.Provider>
-        </Contexts.Navigator.Provider>
-      </Contexts.Cache.Provider>
+      <Contexts.Navigator.Provider value={navigator}>
+        <Contexts.Snackbar.Provider value={snackbar}>
+          <Contexts.Linker.Provider value={linker}>
+            <Contexts.History.Provider value={globalHistoryState}>
+              {children}
+            </Contexts.History.Provider>
+          </Contexts.Linker.Provider>
+        </Contexts.Snackbar.Provider>
+      </Contexts.Navigator.Provider>
     </>
   )
 }
