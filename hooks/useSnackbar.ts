@@ -7,7 +7,7 @@ export function useSnackbar() {
   let navigator = useNavigator()
 
   // Закрывает снэкбар при переходе на другое состояние навигации
-  useEffect(() => navigator.createPhantomTask(snackbar.close), [])
+  useEffect(() => navigator.createTask(snackbar.close), [])
 
   return {
     setSnackbar: (node: ReactNode) => snackbar.set(node),
