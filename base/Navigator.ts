@@ -196,10 +196,12 @@ export class Navigator {
   /**
    * Дублирует текущую запись в истории браузера.
    */
-  duplicateRecord = (state: HistoryItemState = this.history.state) => {
-    this.history.pushState(state, '', this.location.search)
-    this.dispatchEvent(state)
-  }
+  duplicateRecord = (state: HistoryItemState = this.history.state) =>
+    new Promise<void>(resolve => {
+      this.createPhantomTask(resolve)
+      this.history.pushState(state, '', this.location.search)
+      this.dispatchEvent(state)
+    })
 
   /**
    * Изменяет текущую запись в истории. Данный метод особенно полезен,

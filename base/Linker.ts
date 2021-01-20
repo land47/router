@@ -37,7 +37,7 @@ export class Linker extends Base.Cache<string, unknown> {
     let id = this.makeId()
     this.set(id, el)
 
-    this.navigator.duplicateRecord({ __linkerId: id, __linkerKey: key })
+    return this.navigator.duplicateRecord({ __linkerId: id, __linkerKey: key })
   }
 
   getCurrent = (key: string) => {
@@ -50,9 +50,7 @@ export class Linker extends Base.Cache<string, unknown> {
     return this.get(state.__linkerId) || null
   }
 
-  back = () => {
-    this.navigator.back()
-  }
+  back = () => this.navigator.back()
 
   private makeId = () => '' + Math.random()
 }
