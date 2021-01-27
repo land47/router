@@ -210,10 +210,7 @@ export class Navigator {
    *
    * https://developer.mozilla.org/ru/docs/Web/API/History/replaceState
    */
-  replace = <T>(
-    record: Record<string, string>,
-    state: HistoryItemState<T> = {}
-  ) => {
+  replace = (record: Record<string, string>, state: HistoryItemState = {}) => {
     return new Promise<void>(resolve => {
       if (
         this.convertSearchParams(record) === this.location.search &&
@@ -221,6 +218,11 @@ export class Navigator {
       ) {
         return resolve()
       }
+
+      // Пока оставлю явное переопределение истории для этого метода,
+      // но в планах реализовать что-то нормально
+      // TODO
+      this.historyItems = this.historyItems.slice(0, -1)
 
       this.createPhantomTask(resolve)
       this.history.replaceState(state, '', this.convertSearchParams(record))

@@ -20,6 +20,9 @@ export function useStructure<S extends ApplicationStructure, T>(
   let { popout } = usePopout()
 
   useEffect(() => {
+    // Иначе может сломаться свайпбек
+    navigator.historyItems = [{ ...initial, ...navigator.history.state }]
+
     navigator.freezeLifecycle()
     navigator.replace(Utils.withoutValue(initial, undefined))
     navigator.unfreezeLifecycle()
