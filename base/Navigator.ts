@@ -214,15 +214,18 @@ export class Navigator {
     record: Record<string, string>,
     state: HistoryItemState<T> = {}
   ) => {
-    if (
-      this.convertSearchParams(record) === this.location.search &&
-      areObjectsEqual(state, this.history.state)
-    ) {
-      return
-    }
+    return new Promise<void>(resolve => {
+      if (
+        this.convertSearchParams(record) === this.location.search &&
+        areObjectsEqual(state, this.history.state)
+      ) {
+        return resolve()
+      }
 
-    this.history.replaceState(state, '', this.convertSearchParams(record))
-    this.dispatchEvent(state)
+      this.createPhantomTask(resolve)
+      this.history.replaceState(state, '', this.convertSearchParams(record))
+      this.dispatchEvent(state)
+    })
   }
 
   /**

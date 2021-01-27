@@ -15,12 +15,14 @@ type Structure<S extends ApplicationStructure> = S & {
 export function useStructure<S extends ApplicationStructure, T>(
   initial: S
 ): Structure<S> {
-  let location = useLocation()
   let navigator = useNavigator()
+  let location = useLocation()
   let { popout } = usePopout()
 
   useEffect(() => {
+    navigator.freezeLifecycle()
     navigator.replace(Utils.withoutValue(initial, undefined))
+    navigator.unfreezeLifecycle()
   }, [])
 
   return {
