@@ -1,4 +1,4 @@
-node_modules 
+node_modules
 dist
 
 *.lock
@@ -7,3 +7,5 @@ dist
 
 .vscode
 .idea
+
+.yarn
