@@ -3,18 +3,31 @@ import bridge from '@vkontakte/vk-bridge'
 import { useHistory, useLocation, useRouter } from '.'
 import { SerializedURLParams } from '../shared/types'
 
-/** TODO */
-function getPanelsHistoryByView(history: SerializedURLParams[], view: string) {
+/**
+ * Возвращает историю переходов по панелям для определённого
+ * значения (id) ключа (by).
+ *
+ * В этом примере вернёт историю перехода по панелям
+ * для `story` с id `home`:
+ * ```typescript
+ * getPanelsHistoryBy([...], 'story', 'home')
+ * ```
+ */
+function getPanelsHistoryBy(
+  history: SerializedURLParams[],
+  by: string,
+  id: string
+) {
   let reversed = [...history].reverse()
-  let bool = reversed.map(item => item.view === view)
-  let incorrectIndex = bool.findIndex(b => !b)
+  let booleans = reversed.map(item => item[by] === id)
+  let incorrectIndex = booleans.findIndex(b => !b)
 
   return reversed
     .slice(0, incorrectIndex >= 0 ? incorrectIndex : reversed.length)
     .reduceRight((acc: string[], item) => [...acc, item.panel || ''], [])
 }
 
-/** TODO */
+/** Возвращает историю переходов по всем панелям */
 function getPanelsHistory(history: SerializedURLParams[]) {
   return history.map(item => item.panel || '')
 }
@@ -33,9 +46,9 @@ export function useSwipeBack() {
   }, [history])
 
   return {
-    history: location.view
-      ? getPanelsHistoryByView(history, location.view)
-      : getPanelsHistory(history),
+    history: location.story
+      ? getPanelsHistoryBy(history, 'story', location.story) : location.view
+      ? getPanelsHistoryBy(history, 'view', location.view) : getPanelsHistory(history),
     onSwipeBack: router.back,
   }
 }
