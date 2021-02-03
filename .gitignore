@@ -1,11 +1,16 @@
+# ????
 node_modules
 dist
 
+# Package managers
 *.lock
 *.log
 *-lock.json
+.yarn
 
+# Editors
 .vscode
 .idea
 
-.yarn
+# Other
+size-plugin.json

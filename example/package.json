@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "mini-app",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "preact build",
+    "serve": "sirv build --port 8080 --cors --single",
+    "dev": "preact watch",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
+  },
+  "workspaces": [
+    "router"
+  ],
+  "dependencies": {
+    "@unexp/router": "portal:/C:/projects/github/router",
+    "@vkontakte/icons": "^1.74.0",
+    "@vkontakte/vk-bridge": "^2.3.0",
+    "@vkontakte/vkjs": "^0.20.0",
+    "@vkontakte/vkui": "^4.0.8",
+    "preact": "^10.5.12",
+    "preact-render-to-string": "^5.1.12"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "preact-cli": "^3.0.5",
+    "sirv-cli": "^1.0.11",
+    "typescript": "^4.1.3"
+  }
+}
