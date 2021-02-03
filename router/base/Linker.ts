@@ -25,6 +25,8 @@ import * as Base from '../base'
  * Это моя суперская и гениальная разработка (да-да, такой вот я крутой)
  */
 export class Linker extends Base.Cache<string, unknown> {
+  static Fallback = null
+
   constructor(private readonly navigator: Base.Navigator) {
     super()
   }
@@ -44,13 +46,17 @@ export class Linker extends Base.Cache<string, unknown> {
     let { state } = this.navigator.history
 
     if (!state || state.__linkerKey !== key) {
-      return null
+      return Linker.Fallback
     }
 
-    return this.get(state.__linkerId) || null
+    return this.get(state.__linkerId) || Linker.Fallback
   }
 
-  back = () => this.navigator.back()
+  back = (key: string) => {
+    if (this.getCurrent(key) !== Linker.Fallback) {
+      return this.navigator.back()
+    }
+  }
 
   private makeId = () => '' + Math.random()
 }
