@@ -4,10 +4,11 @@ import * as Contexts from '../contexts'
 
 export let usePopout = () => {
   let linker = useSafeContext(Contexts.Linker)
+  let linkerKey = 'popout'
 
   return {
-    setPopout: (node: ReactNode) => linker.push(node, 'popout'),
-    closePopout: () => linker.back(),
-    popout: linker.getCurrent('popout') as ReactNode,
+    setPopout: (node: ReactNode) => linker.push(node, linkerKey),
+    closePopout: () => linker.back(linkerKey),
+    popout: linker.getCurrent(linkerKey) as ReactNode,
   }
 }
