@@ -13,7 +13,7 @@
     "router"
   ],
   "dependencies": {
-    "@unexp/router": "portal:/C:/projects/github/router",
+    "@unexp/router": "portal:../router",
     "@vkontakte/icons": "^1.74.0",
     "@vkontakte/vk-bridge": "^2.3.0",
     "@vkontakte/vkjs": "^0.20.0",

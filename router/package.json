@@ -41,6 +41,6 @@
     "@vkontakte/vk-bridge": "*"
   },
   "resolutions": {
-    "@unexp/router": "portal:/C:/projects/github/router"
+    "@unexp/router": "portal:../router"
   }
 }
