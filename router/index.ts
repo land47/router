@@ -2,7 +2,6 @@ export {
   useStructure,
   useRouter,
   useParams,
-  useSnackbar,
   usePopout,
   useSwipeBack,
   useLocation,
