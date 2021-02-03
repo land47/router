@@ -10,7 +10,6 @@
 - <a href='#подготовка'>Подготовка</a>
 - <a href='#определение-структуры'>Определение структуры</a>
 - <a href='#управление-навигацией'>Управление навигацией</a>
-- <a href='#управление-снэкбарами'>Управление снэкбарами</a>
 - <a href='#управление-модальными-окнами'>Управление модальными окнами</a>
 - <a href='#управление-всплывающими-окнами'>Управление всплывающими окнами</a>
 - <a href='#обработка-свайпбеков'>Обработка iOS SwipeBack</a>
@@ -178,34 +177,6 @@ export function About() {
   
       <SimpleCell onClick={() => go(-1)}>
         Перейти назад
-      </SimpleCell>
-    </Panel>
-  )
-}
-```
-
-## Управление снэкбарами
-Для показа коротких сообщений в нижней части экрана (снэкбаров) реализован хук `useSnackbar`.
-
-```jsx
-// ...imports
-import {useSnackbar} from '@unexp/router'
-
-export function Home() {
-  let {setSnackbar, closeSnackbar} = useSnackbar()  
-
-  function showError() {
-    setSnackbar(
-      <Snackbar onClose={closeSnackbar}>Произошла ошибка</Snackbar>
-    )
-  }
-
-  return (
-    <Panel>
-      <PanelHeader>Снэкбары</PanelHeader>
-
-      <SimpleCell onClick={showError}>
-        Показать сообщение об ошибке
       </SimpleCell>
     </Panel>
   )
@@ -422,8 +393,7 @@ export function Product() {
 помощью хука <a href='#передача-параметров'>useRouter</a>.
 
 ### useSnackbar
-Возвращает интерфейс для управления снэкбарами. С помощью него можно показывать короткие
-сообщения внизу экрана.
+Не дойдёт до релиза ;(
 
 ### usePopout
 Возвращает интерфейс для управления всплывающими окнами (popouts, не путать с модальными)
