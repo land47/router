@@ -19,8 +19,10 @@ export class Navigator {
   historyItems: (SerializedURLParams & HistoryItemState)[] = []
 
   constructor() {
-    window.addEventListener('popstate', this.observer)
-    window.addEventListener('popstate', this.lifecycle)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('popstate', this.observer)
+      window.addEventListener('popstate', this.lifecycle)
+    }
   }
 
   /**
@@ -127,11 +129,25 @@ export class Navigator {
   }
 
   get location() {
-    return { ...window.location, search: window.location.hash }
+    if (typeof window !== 'undefined') {
+      return { ...window.location, search: window.location.hash }
+    }
+
+    return {search: '', hash: ''}
   }
 
   get history() {
-    return window.history
+    if (typeof window !== 'undefined') {
+      return window.history
+    }
+
+    return {
+      state: {},
+      replaceState() {},
+      pushState() {},
+      go() {},
+      back() {},
+    } as unknown as History
   }
 
   /**
@@ -252,7 +268,9 @@ export class Navigator {
    * передаваемый объект.
    */
   dispatchEvent<T>(state: HistoryItemState<T>) {
-    window.dispatchEvent(new PopStateEvent('popstate', { state }))
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new PopStateEvent('popstate', { state }))
+    }
   }
 
   /**
