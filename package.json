@@ -4,7 +4,7 @@
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn dlx microbundle --jsxImportSource=react --tsconfig=tsconfig.build.json --no-sourcemap",
+    "build": "yarn dlx microbundle --jsxImportSource=react --tsconfig=tsconfig.build.json --no-sourcemap --compress",
     "build:dev": "tsc -w"
   },
   "peerDependencies": {

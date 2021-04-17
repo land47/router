@@ -6,6 +6,10 @@ export type Location = {
 
 export function getCurrentLocation(root: RootNodeType | null): Location {
   const path = window.location.pathname.split(/(?=\/)/)
+  const hash = window.location.hash
+    ? window.location.hash.replace('#', '/').split(/(?=\/)/)
+    : ''
+
   const location = {} as Location
 
   if (root == null) {
@@ -13,18 +17,18 @@ export function getCurrentLocation(root: RootNodeType | null): Location {
   }
 
   if (root == RootNodeType.Epic) {
-    location.activeStory = path[0] || '/'
-    location.activeView  = path[1] || '/'
-    location.activePanel = path[2] || '/'
+    location.activeStory = (hash || path)[0] || '/'
+    location.activeView  = (hash || path)[1] || '/'
+    location.activePanel = (hash || path)[2] || '/'
   }
 
   if (root == RootNodeType.View) {
-    location.activePanel = path[0] || '/'
+    location.activePanel = (hash || path)[0] || '/'
   }
 
   if (root == RootNodeType.Root) {
-    location.activeView  = path[0] || '/'
-    location.activePanel = path[1] || '/'
+    location.activeView  = (hash || path)[0] || '/'
+    location.activePanel = (hash || path)[1] || '/'
   }
 
   return location

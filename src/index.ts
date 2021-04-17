@@ -1,4 +1,5 @@
 export {View as Match} from './components/RouterMatch'
+export type {Props as MatchProps} from './components/RouterMatch'
 
 export type {Location} from './util/RouterLocation'
 

@@ -3,7 +3,6 @@ import {batch} from './RouterBatch'
 import type {Location} from './RouterLocation'
 import {getCurrentLocation} from './RouterLocation'
 import {startTransition} from './RouterStartTransition'
-import type {RootNodeType} from './RouterChildren'
 import config from './RouterConfig'
 
 export type History = Location[]
@@ -24,6 +23,6 @@ export const notify = () => {
 }
 
 export const history = [] as History
-export const updateHistory = (root: RootNodeType | null = config.as) => {
+export const updateHistory = (root = config.as) => {
   history.push(getCurrentLocation(root))
 }
