@@ -1,29 +1,28 @@
-import {FC, useEffect} from 'react'
-import {notifyWithTransition, listeners, updateHistory} from '../util/RouterHistory'
-import {rootNodeForChildren, rootComponentBy} from '../util/RouterChildren'
+import {FC, useEffect, useMemo} from 'react'
+import {notify, listeners, updateHistory} from '../util/RouterHistory'
+import {rootNodeForChildren, rootComponentBy, builder} from '../util/RouterChildren'
 import {useLocation} from '../hooks/RouterHooks'
 import config from '../util/RouterConfig'
 
 export const View: FC = ({
   children
 }) => {
-  const root = rootNodeForChildren(children)
-  const RootComponent = rootComponentBy(root)
+  const root = useMemo(() => rootNodeForChildren(children), [])
+  const RootComponent = useMemo(() => rootComponentBy(root), [])
   const location = useLocation(root)
+  config.as = root
 
   useEffect(() => {
-    config.as = root
-
     listeners.add(updateHistory)
-    window.addEventListener('popstate', notifyWithTransition)
+    window.addEventListener('popstate', notify)
 
     return () => {
       listeners.delete(updateHistory)
-      window.removeEventListener('popstate', notifyWithTransition)
+      window.removeEventListener('popstate', notify)
     }
   }, [])
 
-  return <RootComponent>
-    {children}
-  </RootComponent>
+  return <>
+    {builder(<RootComponent>{children}</RootComponent>, location)}
+  </>
 }
