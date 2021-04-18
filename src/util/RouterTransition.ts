@@ -1,5 +1,4 @@
-import {ReactElement, isValidElement} from 'react'
-import config from './RouterConfig'
+import type {AnyDict} from './RouterSharedTypes'
 
 export type TransitionOptions = {
   replace?: boolean
@@ -10,13 +9,9 @@ export function transition(path: string, state?: any): void
 export function transition(path: string, state?: any, options?: TransitionOptions): void
 export function transition(
   to: string | number,
-  state?: any,
+  state?: AnyDict,
   options?: TransitionOptions
 ) {
-  if (config.block) {
-    return
-  }
-
   if (typeof to == 'number') {
     return window.history.go(to)
   }

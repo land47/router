@@ -4,10 +4,11 @@
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn dlx microbundle --jsxImportSource=react --tsconfig=tsconfig.build.json --no-sourcemap --compress",
+    "build": "yarn dlx microbundle --jsxImportSource=react --tsconfig=tsconfig.build.json --no-sourcemap --compressa",
     "build:dev": "tsc -w"
   },
   "peerDependencies": {
+    "@vkontakte/vkui": "^4.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

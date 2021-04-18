@@ -1,4 +1,17 @@
 import {RootNodeType} from './RouterChildren'
+import {batch} from './RouterBatch'
+import {startTransition} from './RouterStartTransition'
+import type {AnyFn} from './RouterSharedTypes'
+
+export const listeners = new Set<AnyFn>()
+
+export const notify = () => {
+  startTransition(() =>
+    batch(() => {
+      listeners.forEach(fn => fn())
+    })
+  )
+}
 
 export type Location = {
   [K in 'activeStory' | 'activeView' | 'activePanel']?: string

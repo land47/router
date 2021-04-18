@@ -1,6 +1,7 @@
 import {ReactNode, isValidElement, cloneElement, Children, ReactElement} from 'react'
 import {Epic, Root, View, Panel} from '@vkontakte/vkui'
 import type {Location} from './RouterLocation'
+import {onTransition, history, onSwipeBack} from './RouterSwipeback'
 
 export enum RootNodeType {
   Epic, Root, View
@@ -23,11 +24,11 @@ export const isPanel = (node: ReactNode) => (
 )
 
 export function rootNodeForChildren(children: ReactNode): RootNodeType | null {
-  if (Array.isArray(children)) return rootNodeForChildren(children[0])
+  if (Array.isArray(children))   return rootNodeForChildren(children[0])
   if (!isValidElement(children)) return null
 
-  if (isRoot(children)) return RootNodeType.Epic
-  if (isView(children)) return RootNodeType.Root
+  if (isRoot(children))  return RootNodeType.Epic
+  if (isView(children))  return RootNodeType.Root
   if (isPanel(children)) return RootNodeType.View
 
   return RootNodeType.View
@@ -35,14 +36,10 @@ export function rootNodeForChildren(children: ReactNode): RootNodeType | null {
 
 export function rootComponentBy(type: RootNodeType | null): any {
   switch (type) {
-    case RootNodeType.Epic:
-      return Epic
-    case RootNodeType.Root:
-      return Root
-    case RootNodeType.View:
-      return View
-    default:
-      return View
+    case RootNodeType.Epic: return Epic
+    case RootNodeType.Root: return Root
+    case RootNodeType.View: return View
+    default: return View
   }
 }
 
@@ -98,7 +95,7 @@ export function build(
         delete _exhaustiveCheck.activePanel
       }
 
-      return cloneElement(el, {activePanel})
+      return cloneElement(el, {activePanel, onTransition, onSwipeBack, history})
     }
 
     if (isRoot(el)) {

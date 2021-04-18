@@ -1,13 +1,11 @@
 import type {RootNodeType} from './RouterChildren'
 
 export type RouterConfig = {
-  as: RootNodeType | null,
-  block: boolean
+  as: RootNodeType | null
 }
 
 const config: RouterConfig = {
-  as: null,
-  block: false,
+  as: null
 }
 
 export default config
