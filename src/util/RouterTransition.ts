@@ -1,4 +1,5 @@
-import type {AnyDict} from './RouterSharedTypes'
+import type {LocationState} from './RouterLocation'
+import {getRouterState} from './RouterState'
 
 export type TransitionOptions = {
   replace?: boolean
@@ -9,9 +10,20 @@ export function transition(path: string, state?: any): void
 export function transition(path: string, state?: any, options?: TransitionOptions): void
 export function transition(
   to: string | number,
-  state?: AnyDict,
+  state?: LocationState,
   options?: TransitionOptions
 ) {
+  const {
+    index: fromIndex
+  } = getRouterState()
+
+  state = {
+    ...state,
+    __router: {
+      index: fromIndex + 1
+    }
+  }
+
   if (typeof to == 'number') {
     return window.history.go(to)
   }

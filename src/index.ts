@@ -1,6 +1,7 @@
 export {
-  useRouteState,
-  useLocation
+  useLocationState,
+  useLocation,
+  useHistory
 } from './hooks/RouterHooks'
 
 export type {Props as MatchProps} from './components/RouterMatch'
@@ -13,3 +14,4 @@ export type {RootNodeType} from './util/RouterChildren'
 
 export type {Location} from './util/RouterLocation'
 export {getCurrentLocation} from './util/RouterLocation'
+

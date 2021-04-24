@@ -65,25 +65,20 @@ export function map(
   })
 }
 
-function checkIfAnyChildrenHasId(el: ReactElement, id: unknown) {
+function findActiveChildren(el: ReactElement, id: unknown) {
   return Children
     .toArray(el.props.children)
-    .map((child: any) => child.props.id == id)
-    .some(e => e)
+    .find((child: any) => child.props.id == id)
 }
 
 export function build(
   children: ReactNode,
-  location: Location,
-  fallback?: ReactNode,
+  fallback: ReactNode,
+  nextLocation: Location,
 ) {
   const _exhaustiveCheck = {
-    ...location
+    ...nextLocation
   }
-
-  const {
-    activePanel, activeView, activeStory
-  } = location
 
   const mapped = map(children, el => {
     if (!isValidElement(el)) {
@@ -91,27 +86,27 @@ export function build(
     }
 
     if (isView(el)) {
-      if (checkIfAnyChildrenHasId(el, activePanel)) {
+      if (findActiveChildren(el, nextLocation.activePanel)) {
         delete _exhaustiveCheck.activePanel
       }
 
-      return cloneElement(el, {activePanel, onTransition, onSwipeBack, history})
+      return cloneElement(el, {activePanel: nextLocation.activePanel})
     }
 
     if (isRoot(el)) {
-      if (checkIfAnyChildrenHasId(el, activeView)) {
+      if (findActiveChildren(el, nextLocation.activeView)) {
         delete _exhaustiveCheck.activeView
       }
 
-      return cloneElement(el, {activeView})
+      return cloneElement(el, {activeView: nextLocation.activeView})
     }
 
     if (isEpic(el)) {
-      if (checkIfAnyChildrenHasId(el, activeStory)) {
+      if (findActiveChildren(el, nextLocation.activeStory)) {
         delete _exhaustiveCheck.activeStory
       }
 
-      return cloneElement(el, {activeStory})
+      return cloneElement(el, {activeStory: nextLocation.activeStory})
     }
 
     return el

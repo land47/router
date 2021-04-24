@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react'
-import type {Location} from '../util/RouterLocation'
-import {getCurrentLocation} from '../util/RouterLocation'
+import type {Location, LocationState} from '../util/RouterLocation'
+import {getCurrentLocation, getLocationState} from '../util/RouterLocation'
 import {listeners} from '../util/RouterLocation'
+import type {History} from '../util/RouterHistory'
 import config from '../util/RouterConfig'
-import type {AnyDict} from '../util/RouterSharedTypes'
+import {isForward, isBack, getCurrentHistoryItem} from '../util/RouterHistory'
 
 export function useLocation(forceRoot = config.as): Location {
   const [location, setLocation] = useState<Location>(
@@ -22,12 +23,12 @@ export function useLocation(forceRoot = config.as): Location {
   return location
 }
 
-export function useRouteState(): AnyDict {
-  const [state, setState] = useState(window.history.state)
+export function useLocationState(): LocationState {
+  const [state, setState] = useState(getLocationState)
 
   useEffect(() => {
     function updater() {
-      setState(window.history.state)
+      setState(state => state ? state : getLocationState())
     }
 
     listeners.add(updater)
@@ -35,4 +36,39 @@ export function useRouteState(): AnyDict {
   }, [])
 
   return state
+}
+
+export function useHistory(): History {
+  const [history, setHistory] = useState<History>([
+    getCurrentHistoryItem()
+  ])
+
+  useEffect(() => {
+    function updater() {
+      const current = getCurrentHistoryItem()
+
+      setHistory(h => {
+        if (isBack(current, h)) {
+          const backIndex = h.findIndex(
+            e => e.state.__router.index == current.state.__router.index
+          )
+          const history = [...h]
+
+          history.splice(backIndex + 1, 1)
+          return history
+        }
+
+        if (isForward(current, h)) {
+          return [...h, current]
+        }
+
+        return history
+      })
+    }
+
+    listeners.add(updater)
+    return () => void listeners.delete(updater)
+  }, [])
+
+  return history
 }

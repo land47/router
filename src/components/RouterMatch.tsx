@@ -1,8 +1,10 @@
-import {FC, ReactNode, useEffect, useMemo} from 'react'
-import {notify} from '../util/RouterLocation'
+import type {FC, ReactNode} from 'react'
+import {Suspense, useEffect, useMemo} from 'react'
+import {notifyAboutLocationChange} from '../util/RouterLocation'
 import {rootNodeForChildren, rootComponentBy, build} from '../util/RouterChildren'
 import {useLocation} from '../hooks/RouterHooks'
 import config from '../util/RouterConfig'
+import {getPreviousLocation} from '../util/RouterHistory'
 
 export type Props = {
   fallback: ReactNode
@@ -13,17 +15,32 @@ export const View: FC<Props> = ({
 }) => {
   const root = useMemo(() => (config.as = rootNodeForChildren(children)), [])
   const RootComponent = useMemo(() => rootComponentBy(root), [])
-  const location = useLocation(root)
+  const nextRenderLocation = useLocation()
+  const currentRenderLocation = getPreviousLocation()
 
   useEffect(() => {
-    window.addEventListener('popstate', notify)
+    window.addEventListener('popstate', notifyAboutLocationChange)
 
     return () => {
-      window.removeEventListener('popstate', notify)
+      window.removeEventListener('popstate', notifyAboutLocationChange)
     }
   }, [])
 
+  const app = (
+    <RootComponent>
+      {children}
+    </RootComponent>
+  )
+
   return <>
-    {build(<RootComponent>{children}</RootComponent>, location, fallback)}
+    <Suspense
+      fallback={
+        <Suspense fallback={null}>
+          {build(app, fallback, currentRenderLocation)}
+        </Suspense>
+      }
+    >
+      {build(app, fallback, nextRenderLocation)}
+    </Suspense>
   </>
 }
