@@ -16,7 +16,7 @@
     "@unexp/router": "portal:../router",
     "@vkontakte/icons": "^1.74.0",
     "@vkontakte/vk-bridge": "^2.3.0",
-    "@vkontakte/vkjs": "^0.21.0",
+    "@vkontakte/vkjs": "^0.22.1",
     "@vkontakte/vkui": "^4.0.8",
     "preact": "^10.5.12",
     "preact-render-to-string": "^5.1.12"
